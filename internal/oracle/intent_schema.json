@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "scope": {
+      "type": "string",
+      "description": "What the task should accomplish (max 200 chars)"
+    },
+    "prohibited_actions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Actions the task MUST NOT perform"
+    },
+    "deadline_rfc3339": {
+      "type": "string",
+      "description": "ISO 8601 deadline or empty string"
+    },
+    "transport_class": {
+      "type": "string",
+      "enum": ["fast-local", "fast-wide", "delay-tolerant"]
+    },
+    "required_approvals": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "canonical_goal": {
+      "type": "string",
+      "description": "Precise, unambiguous rewrite of the goal preserving all safety constraints"
+    }
+  },
+  "required": ["scope", "prohibited_actions", "deadline_rfc3339", "transport_class", "canonical_goal"],
+  "additionalProperties": false
+}

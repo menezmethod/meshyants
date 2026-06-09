@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+package meshyants.v1;
+
+option go_package = "github.com/meshyants/meshyants/v1/gen/meshyantsv1;meshyantsv1";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+enum RuntimeTier {
+  RUNTIME_TIER_UNSPECIFIED = 0;
+  RUNTIME_TIER_RELAY = 1;
+  RUNTIME_TIER_EXECUTOR_BASIC = 2;
+  RUNTIME_TIER_EXECUTOR_WASM = 3;
+}
+
+enum PheromoneKind {
+  PHEROMONE_KIND_UNSPECIFIED = 0;
+  PHEROMONE_KIND_SAFE = 1;
+  PHEROMONE_KIND_TODO = 2;
+  PHEROMONE_KIND_INSIGHT = 3;
+  PHEROMONE_KIND_DANGER = 4;
+}
+
+message JoinGrant {
+  uint32 schema_version = 1;
+  string grant_id = 2;
+  string trust_domain = 3;
+  string issuer = 4;
+  google.protobuf.Timestamp expires_at = 5;
+  bytes signature = 100;
+}
+
+message ProvisioningManifest {
+  uint32 schema_version = 1;
+  string device_id = 2;
+  string trust_domain = 3;
+  RuntimeTier runtime_tier = 4;
+  string issuer = 5;
+  string build_policy = 6;
+  google.protobuf.Timestamp expires_at = 7;
+  bytes signature = 100;
+}
+
+message AttestationEvidence {
+  uint32 schema_version = 1;
+  string device_id = 2;
+  string trust_domain = 3;
+  string boot_state = 4;
+  repeated bytes measurements = 5;
+  google.protobuf.Timestamp created_at = 6;
+  bytes signature = 100;
+}
+
+message ResourceHints {
+  uint64 memory_bytes = 1;
+  uint32 cpu_millicores = 2;
+}
+
+message CapabilityAdvertisement {
+  uint32 schema_version = 1;
+  string device_id = 2;
+  string trust_domain = 3;
+  RuntimeTier runtime_tier = 4;
+  ResourceHints resources = 5;
+  repeated string accelerators = 6;
+  uint32 queue_depth = 7;
+  string transport_profile = 8;
+  google.protobuf.Timestamp valid_until = 9;
+  bytes signature = 100;
+}
+
+message TaskAtom {
+  uint32 schema_version = 1;
+  string task_id = 2;
+  string idempotency_key = 3;
+  string issuer = 4;
+  string trust_domain = 5;
+  repeated string causal_parents = 6;
+  string requirements_json = 7;
+  bytes payload = 8;
+  google.protobuf.Timestamp expires_at = 9;
+  string content_ref = 10;
+  bytes signature = 100;
+}
+
+message DecayPolicy {
+  string kind = 1;
+  uint64 half_life_seconds = 2;
+}
+
+message PheromoneRecord {
+  uint32 schema_version = 1;
+  string record_id = 2;
+  PheromoneKind kind = 3;
+  string subject = 4;
+  double strength = 5;
+  DecayPolicy decay_policy = 6;
+  string issuer = 7;
+  string trust_domain = 8;
+  repeated string causal_parents = 9;
+  google.protobuf.Timestamp issued_at = 10;
+  bytes signature = 100;
+}
+
+message ReputationEvent {
+  uint32 schema_version = 1;
+  string subject_device = 2;
+  string trust_domain = 3;
+  string reason = 4;
+  int32 delta = 5;
+  repeated string evidence_refs = 6;
+  string issuer = 7;
+  google.protobuf.Timestamp created_at = 8;
+  bytes signature = 100;
+}
+
+message QuarantineNotice {
+  uint32 schema_version = 1;
+  string subject_device = 2;
+  string trust_domain = 3;
+  string reason = 4;
+  string scope = 5;
+  google.protobuf.Duration duration = 6;
+  string issuer = 7;
+  google.protobuf.Timestamp issued_at = 8;
+  bytes signature = 100;
+}
+
+message UpdateManifest {
+  uint32 schema_version = 1;
+  string release_id = 2;
+  string trust_domain = 3;
+  repeated string targets = 4;
+  string compat_window = 5;
+  map<string, bytes> hashes = 6;
+  string rollback_target = 7;
+  string issuer = 8;
+  google.protobuf.Timestamp valid_until = 9;
+  bytes signature = 100;
+}
+
+message ContentRef {
+  uint32 schema_version = 1;
+  string trust_domain = 2;
+  string multihash = 3;
+  string issuer = 4;
+  google.protobuf.Timestamp created_at = 5;
+  bytes signature = 100;
+}
