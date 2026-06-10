@@ -1,0 +1,17 @@
+name: Sync tasks to Issues
+on:
+  push:
+    branches: [main]
+    paths: [docs/tasks/tasks.json]
+permissions:
+  issues: write
+  contents: read
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sync tasks to GitHub Issues
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python3 .github/scripts/sync-tasks-to-issues.py
