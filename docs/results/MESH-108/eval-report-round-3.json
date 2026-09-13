@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "task_id": "MESH-108",
+  "hypothesis": "A machine-checked evaluator report can reject work, require a strongest simpler explanation, and turn negatives into task drafts. It does not replace independent scientific judgment; it blocks rubber stamps, buried negatives, and done-without-evidence.",
+  "falsification_condition": "A rubber-stamp or token-gamed report Advances; status=done without a matching advancing eval-report.json passes check-tasks; reject/risk findings produce no task draft.",
+  "round": 3,
+  "previous_total": 12,
+  "composite_verdict": "PASS WITH RISKS",
+  "scorecard": {
+    "scientific_validity": 3,
+    "simpler_baseline_advantage": 2,
+    "performance_cost": 4,
+    "resilience_scalability": 3,
+    "code_experiment_quality": 3
+  },
+  "baseline_results": "schemaOnlyAccepts in internal/evalgate/gate_test.go accepts testdata/rubber_stamp.json and testdata/fluent_stamp.json; evalgate Validate rejects both. Scheduler: a pattern-tightened JSON Schema plus jq still ties the existence claim. simpler_baseline_advantage stays at 2; no Go-vs-schema win is claimed.",
+  "cost_latency_model_calls": "go test -race ./internal/evalgate/ 1.020s; LoadReport near-max 391µs; oversize Stat-reject 4.5µs; 0 in-gate model calls; three fresh-context judge agents.",
+  "evaluators": [
+    {
+      "id": "scientific_skeptic",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "SHA 204f6d8: docs/tasks/tasks.json MESH-108 hypothesis is the revised capability claim. TestGate_RejectBlocksDone: composite REJECT => Decide.Advance=false.",
+        "internal/evalgate/gate.go requires strongest_simpler_explanation. TestGate_NegativeFindingSpawnsTaskDraft writes MESH-108-F1. testdata/fluent_stamp.json Validate fails. TestCheckTasks_MismatchedTaskID blocks testdata/valid_pass.json under MESH-FAKE."
+      ],
+      "strongest_objection": "Blocks rubber stamps is still a lexical proxy: an aesthetic sentence that contains a slash or testdata can Advance.",
+      "strongest_simpler_explanation": "Required fields plus the same path-or-metric regex in JSON Schema and a jq done-hook. Beating schema was withdrawn.",
+      "repeated_blocker": false,
+      "target_challenge": "no for the withdrawn overclaim; residual yes on the breadth of rubber stamp",
+      "next_experiment": "Record path-decorated aesthetic prose as a residual risk; do not spend another vacuity-heuristic round (thrash stop).",
+      "what_would_reverse_conclusion": "Decide.Advance true on testdata/fluent_stamp.json, the TestGate_RejectsTokenGamedEvidence strings, or all-not_applicable; CheckTasks allowing done with a mismatched or rejecting report.",
+      "findings": [
+        {
+          "severity": "risk",
+          "summary": "Path-bearing aesthetic evidence still counts as a concrete anchor",
+          "evidence": "internal/evalgate/gate.go hasConcreteAnchor is true on any / or testdata. TestGate_RejectsTokenGamedEvidence does not cover internal/evalgate/gate.go is elegant.",
+          "proposed_task": {
+            "title": "Reject path-decorated aesthetic-only evidence or narrow the rubber-stamp claim",
+            "workstream": "quality",
+            "type": "experiment",
+            "hypothesis": "A fluent stamp whose only evidence is a repo path plus elegance language still Advances.",
+            "falsification_condition": "Validate rejects path-plus-aesthetic-only evidence, or the claim is narrowed to the operational class already tested."
+          }
+        },
+        {
+          "severity": "risk",
+          "summary": "Negatives become result-dir drafts, not shared-queue tasks",
+          "evidence": "docs/results/MESH-108/spawned-tasks-round-2.json lists MESH-108-F1/F2/F3; docs/tasks/tasks.json has none of those IDs by design (parallel agents own other IDs).",
+          "proposed_task": {
+            "title": "Prove draft uptake or align success criterion 3 with spawn-only",
+            "workstream": "quality",
+            "type": "research",
+            "hypothesis": "Reject/risk drafts are reviewed within one loop; otherwise create tasks instead of being buried is unmet.",
+            "falsification_condition": "Success criteria are rewritten to drafts written, not queued, or a later loop leaves drafts with no disposition."
+          }
+        }
+      ]
+    },
+    {
+      "id": "scheduler_critic",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "internal/evalgate/gate.go Decide/Spawn/CheckTasks plus .github/workflows/ci.yml check-tasks implement the existence claim. TestCheckTasks_DoneRequiresAdvancingReport and TestCheckTasks_MismatchedTaskID pass.",
+        "internal/evalgate/gate_test.go schemaOnlyAccepts accepts testdata/fluent_stamp.json; a pattern equal to hasConcreteAnchor plus jq still ties Spawn/CheckTasks. docs/tasks/tasks.json no longer claims a Go-vs-schema win."
+      ],
+      "strongest_objection": "Withdrawing the advantage claim does not make internal/evalgate necessary; checklist_or_schema still ties the existence claim.",
+      "strongest_simpler_explanation": "Put the same rules in docs/tasks/eval-report.schema.json; jq-filter reject|risk findings; shell-walk status=done.",
+      "repeated_blocker": false,
+      "target_challenge": "no — the revised claim is existence of a hook, not a coordination win over JSON Schema",
+      "next_experiment": "Keep simpler_baseline_advantage below 3. Do not re-open a Go-vs-schema advantage claim.",
+      "simpler_system": "checklist_or_schema",
+      "simpler_system_outcome": "ties",
+      "findings": [
+        {
+          "severity": "risk",
+          "summary": "schema+jq still ties the existence claim; the Go package is an extra encoding",
+          "evidence": "docs/tasks/eval-report.schema.json as written accepts testdata/fluent_stamp.json; a tightened schema plus jq matches gate.go without a Go-vs-schema advantage.",
+          "proposed_task": {
+            "title": "Keep evalgate as a non-advantage implementation or replace it with schema+jq",
+            "workstream": "quality",
+            "type": "research",
+            "hypothesis": "MESH-108 success criteria stay met if Validate/Spawn/CheckTasks are expressed only in schema plus a CI jq/shell hook.",
+            "falsification_condition": "A later round scores simpler_baseline_advantage >= 3 or claims the Go package beats JSON Schema."
+          }
+        }
+      ]
+    },
+    {
+      "id": "performance_critic",
+      "verdict": "PASS",
+      "evidence": [
+        "go test -race -count=1 ./internal/evalgate/ ok in 1.020s. LoadReport near-MaxReportBytes 391µs; oversize Stat-reject 4.5µs. cmd/evalgate/main.go makes 0 model calls. .github/workflows/ci.yml runs check-tasks."
+      ],
+      "strongest_objection": "TestGate_DecideLatency is still a 200ms budget, not ns/op.",
+      "strongest_simpler_explanation": "A CI JSON Schema plus jq check-tasks is the same cost class.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Time CheckTasks on a well-formed near-MaxReportBytes tasks.json of pending tasks.",
+      "measurements": {
+        "wall_time": "1.020s race tests; LoadReport near-max 391µs; oversize 4.5µs",
+        "model_calls": "0"
+      }
+    },
+    {
+      "id": "failure_critic",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "TestCheckTasks_BoundedFile in internal/evalgate/gate_test.go: MaxReportBytes+8 → ErrTooLarge. TestCheckTasks_MismatchedTaskID blocks testdata/valid_pass.json under MESH-FAKE.",
+        "internal/evalgate/gate.go safeTaskID rejects ids with / or .. ; id '.' is still filepath.Clean-equal and not treated as unsafe."
+      ],
+      "strongest_objection": "safeTaskID still accepts '.' so a done task named '.' reads resultsDir/eval-report.json.",
+      "strongest_simpler_explanation": "Allowlist task ids to [A-Za-z0-9._-]+ excluding '.' and '..'.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Treat '.' as unsafe if a real queue ever uses non-MESH ids; MESH-108 ids are already safe.",
+      "perturbations_considered": [
+        "oversized_json",
+        "oversized_tasks_json",
+        "mismatched_task_id",
+        "path_escape",
+        "dot_task_id"
+      ],
+      "findings": [
+        {
+          "severity": "risk",
+          "summary": "safeTaskID allows '.' and has no committed escape-id table test",
+          "evidence": "internal/evalgate/gate.go safeTaskID: id '.' equals filepath.Clean('.'). TestCheckTasks_UnsafeTaskID is absent.",
+          "proposed_task": {
+            "title": "Treat '.' as an unsafe task id and test path-escape IDs",
+            "workstream": "quality",
+            "type": "implementation",
+            "hypothesis": "Rejecting '.' and testing ../x, foo/bar, and '.' will close the residual path-join hole.",
+            "falsification_condition": "CheckTasks still treats id='.' as safe, or ../x is not blocked."
+          }
+        }
+      ]
+    },
+    {
+      "id": "slop_evaluator",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "internal/evalgate/gate.go hasConcreteAnchor treats any / as an anchor. TestGate_RejectsTokenGamedEvidence lists three strings only. cmd/evalgate is load-bearing via .github/workflows/ci.yml.",
+        "TestGate_RejectsAllNotApplicable and TestCheckTasks_MismatchedTaskID cover real invariants rather than field mirrors."
+      ],
+      "strongest_objection": "The vacuity invariant is still a lexical proxy; further heuristic rounds would be thrash.",
+      "strongest_simpler_explanation": "Require a path-shaped token (testdata/, slash plus a filename, or a URL) instead of ContainsAny /.",
+      "repeated_blocker": false,
+      "target_challenge": "partially — any-slash is the wrong vacuity metric for a broader rubber-stamp claim",
+      "next_experiment": "Stop. Record slash-gamed aesthetic evidence as a residual risk (3 heuristic attempts already).",
+      "invariant_named": "done requires a matching advancing eval-report.json; REJECT blocks done; risk/reject findings propose tasks; strongest simpler explanation is required; all-not_applicable is invalid.",
+      "deletion_candidate": "A fourth vacuity-heuristic pass on hasConcreteAnchor, not cmd/evalgate or CheckTasks.",
+      "findings": [
+        {
+          "severity": "risk",
+          "summary": "Any slash still rubber-stamps aesthetic evidence",
+          "evidence": "internal/evalgate/gate.go hasConcreteAnchor ContainsAny /\\\\. TestGate_RejectsTokenGamedEvidence does not include looks good / ship it.",
+          "proposed_task": {
+            "title": "Reject slash-gamed aesthetic evidence",
+            "workstream": "quality",
+            "type": "implementation",
+            "hypothesis": "Requiring a path-shaped token will reject looks good / ship it while still accepting internal/evalgate/gate.go and 200ms.",
+            "falsification_condition": "looks good / ship it still passes Validate, or evidence naming internal/evalgate/gate.go is rejected."
+          }
+        }
+      ]
+    }
+  ]
+}

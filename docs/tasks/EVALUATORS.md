@@ -89,3 +89,37 @@ Return:
 - **Next experiment/fix:** one highest-value next move
 
 No evaluator may approve based on aesthetics, novelty, or amount of code.
+
+## Machine-readable contract
+
+A material change attaches a JSON report that validates against
+`docs/tasks/eval-report.schema.json` and passes `go run ./cmd/evalgate decide <report.json>`.
+
+Fresh-context prompt packets (give them evidence, not builder advocacy):
+
+- `docs/tasks/evaluators/scientific_skeptic.md`
+- `docs/tasks/evaluators/scheduler_critic.md`
+- `docs/tasks/evaluators/performance_critic.md`
+- `docs/tasks/evaluators/failure_critic.md`
+- `docs/tasks/evaluators/slop_evaluator.md`
+
+Executable rules live in `internal/evalgate`:
+
+- every required evaluator is present (or `not_applicable` with a reason)
+- each active evaluator names a strongest simpler explanation
+- aesthetic-only evidence cannot PASS
+- `REJECT`, or a reject-severity finding, blocks task status `done`
+- reject/risk findings must include a `proposed_task` (negatives are not buried)
+- a simpler-baseline advantage score ≥ 3 requires `baseline_results`
+- a hidden zero dimension behind a high total cannot clean-PASS
+- scheduler `wins`/`ties` is inconsistent with an advantage score ≥ 3
+
+`evalgate spawn` writes task drafts to a results artifact. Do not silently
+insert them into the shared `tasks.json` queue (parallel agents own other IDs).
+
+`evalgate check-tasks docs/tasks/tasks.json docs/results` is the done-status
+hook: every `status=done` task must have `docs/results/<id>/eval-report.json`
+that `decide` allows to advance. CI runs this hook. Evidence without a path (`/` or `testdata` or URL)
+or a unit-bearing metric (e.g. `200ms`, `4x`, `0 calls`) is vacuous.
+A `MESH-` token, a lone digit, or a bare filename is not enough.
+`report.task_id` must match the queue id. All-`not_applicable` is invalid.

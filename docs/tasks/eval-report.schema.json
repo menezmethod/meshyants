@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meshyants.local/tasks/eval-report.schema.json",
+  "title": "MeshyAnts evaluator gauntlet report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "task_id",
+    "hypothesis",
+    "falsification_condition",
+    "round",
+    "composite_verdict",
+    "scorecard",
+    "evaluators",
+    "baseline_results",
+    "cost_latency_model_calls"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "task_id": { "type": "string", "minLength": 1 },
+    "hypothesis": { "type": "string", "minLength": 1 },
+    "falsification_condition": { "type": "string", "minLength": 1 },
+    "round": { "type": "integer", "minimum": 1 },
+    "previous_total": { "type": ["integer", "null"] },
+    "composite_verdict": { "enum": ["PASS", "PASS WITH RISKS", "REJECT"] },
+    "scorecard": {
+      "type": "object",
+      "required": [
+        "scientific_validity",
+        "simpler_baseline_advantage",
+        "performance_cost",
+        "resilience_scalability",
+        "code_experiment_quality"
+      ],
+      "properties": {
+        "scientific_validity": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "simpler_baseline_advantage": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "performance_cost": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "resilience_scalability": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "code_experiment_quality": { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "evaluators": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "$ref": "#/$defs/evaluator" }
+    },
+    "baseline_results": { "type": "string" },
+    "cost_latency_model_calls": { "type": "string" },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    }
+  },
+  "$defs": {
+    "evaluator": {
+      "type": "object",
+      "required": ["id", "verdict"],
+      "properties": {
+        "id": {
+          "enum": [
+            "scientific_skeptic",
+            "scheduler_critic",
+            "performance_critic",
+            "failure_critic",
+            "slop_evaluator"
+          ]
+        },
+        "verdict": { "enum": ["PASS", "PASS WITH RISKS", "REJECT"] },
+        "not_applicable": { "type": "boolean" },
+        "not_applicable_reason": { "type": "string" },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "strongest_objection": { "type": "string" },
+        "strongest_simpler_explanation": { "type": "string" },
+        "repeated_blocker": { "type": "boolean" },
+        "repeated_blocker_what": { "type": "string" },
+        "target_challenge": { "type": "string" },
+        "next_experiment": { "type": "string" },
+        "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+        "what_would_reverse_conclusion": { "type": "string" },
+        "simpler_system": {
+          "enum": [
+            "priority_queue",
+            "central_router",
+            "deterministic_dag",
+            "manager_worker",
+            "single_worker",
+            "checklist_or_schema",
+            "other"
+          ]
+        },
+        "simpler_system_outcome": { "enum": ["wins", "ties", "loses", "unknown"] },
+        "measurements": { "type": "object", "additionalProperties": { "type": "string" } },
+        "perturbations_considered": { "type": "array", "items": { "type": "string" } },
+        "invariant_named": { "type": "string" },
+        "deletion_candidate": { "type": "string" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["severity", "summary", "evidence"],
+      "properties": {
+        "severity": { "enum": ["reject", "risk", "observation"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "string", "minLength": 1 },
+        "proposed_task": { "$ref": "#/$defs/task_draft" }
+      }
+    },
+    "task_draft": {
+      "type": "object",
+      "required": ["title", "hypothesis", "falsification_condition"],
+      "properties": {
+        "suggested_id": { "type": "string" },
+        "title": { "type": "string" },
+        "workstream": { "type": "string" },
+        "type": { "type": "string" },
+        "priority": { "type": "integer" },
+        "hypothesis": { "type": "string" },
+        "falsification_condition": { "type": "string" },
+        "deliverables": { "type": "array", "items": { "type": "string" } },
+        "success_criteria": { "type": "array", "items": { "type": "string" } },
+        "source_task_id": { "type": "string" },
+        "source_finding": { "type": "string" }
+      }
+    }
+  }
+}

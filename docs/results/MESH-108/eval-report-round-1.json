@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "task_id": "MESH-108",
+  "hypothesis": "Independent adversarial evaluation will prevent us from mistaking complexity, benchmark leakage, or attractive demos for progress.",
+  "falsification_condition": "A vacuous PASS advances; a REJECT fails to block status=done; a reject/risk finding produces no task draft; a simpler checklist/schema matches reject/spawn.",
+  "round": 1,
+  "composite_verdict": "REJECT",
+  "scorecard": {
+    "scientific_validity": 1,
+    "simpler_baseline_advantage": 1,
+    "performance_cost": 4,
+    "resilience_scalability": 2,
+    "code_experiment_quality": 2
+  },
+  "baseline_results": "ChecklistOnlyAccepts accepted testdata/rubber_stamp-equivalent prose. docs/tasks/eval-report.schema.json accepts testdata/rubber_stamp.json. Fluent 24+ char aesthetic evidence advanced under vacuousEvidence in internal/evalgate/gate.go.",
+  "cost_latency_model_calls": "go test -race ./internal/evalgate/ ~1.0s; 200 Decide calls budget 200ms; 0 model calls in-gate",
+  "evaluators": [
+    {
+      "id": "scientific_skeptic",
+      "verdict": "REJECT",
+      "evidence": [
+        "internal/evalgate/gate.go vacuousEvidence: len>=24 is treated as non-vacuous. Evidence 'The architecture is elegant and clearly better than a queue.' has no path or metric and would Advance.",
+        "TaskMayBecomeDone has no callers outside internal/evalgate/gate_test.go. .github/workflows/ci.yml has no evalgate step. docs/results/MESH-108/ was listed before a report existed."
+      ],
+      "strongest_objection": "The published falsification already holds: a fluent vacuous PASS can advance. The gate checks report shape and short aesthetic tokens, not scientific content.",
+      "strongest_simpler_explanation": "A human reading docs/tasks/EVALUATORS.md, or JSON Schema plus a few required-field rules, rejects the same short rubber-stamp fixture. ChecklistOnlyAccepts was written to lose.",
+      "repeated_blocker": false,
+      "target_challenge": "yes — independent adversarial evaluation is not operationalized by structural validation",
+      "next_experiment": "Reject fluent-aesthetic-only evidence; bind Decide to the done-status path.",
+      "what_would_reverse_conclusion": "Decide returns advance=false on fluent aesthetic-only evidence; a real done transition cannot occur with composite REJECT; a non-handicapped schema checker fails a case the Go gate catches.",
+      "findings": [
+        {
+          "severity": "reject",
+          "summary": "Vacuous PASS still advances when evidence is fluent aesthetic prose",
+          "evidence": "internal/evalgate/gate.go vacuousEvidence: len>=24 is non-vacuous. testdata/rubber_stamp.json only fails the short-phrase regex.",
+          "proposed_task": {
+            "title": "Reject fluent-but-empty evaluator evidence",
+            "workstream": "quality",
+            "type": "implementation",
+            "hypothesis": "Validate will reject reports whose evidence is only aesthetic prose, including strings longer than 24 characters with no path, metric, or named artifact.",
+            "falsification_condition": "A fixture whose evidence is fluent aesthetic text with no path or metric still returns Advance=true."
+          }
+        },
+        {
+          "severity": "reject",
+          "summary": "Done-status path is not bound to evalgate",
+          "evidence": "TaskMayBecomeDone is only referenced from internal/evalgate/gate_test.go; ci.yml does not invoke evalgate.",
+          "proposed_task": {
+            "title": "Bind evalgate to the research-loop done transition",
+            "workstream": "quality",
+            "type": "implementation",
+            "hypothesis": "A task cannot become status=done without a valid advancing evalgate Decision.",
+            "falsification_condition": "tasks.json can still be set to done with no report or with composite_verdict=REJECT."
+          }
+        }
+      ]
+    },
+    {
+      "id": "scheduler_critic",
+      "verdict": "REJECT",
+      "evidence": [
+        "internal/evalgate/gate.go ChecklistOnlyAccepts is a 4-line substring check. TestGate_BaselineChecklistAcceptsRubberStampThatGateRejects uses a handicapped baseline.",
+        "docs/tasks/eval-report.schema.json accepts testdata/rubber_stamp.json: required fields present, no vacuous-text rule."
+      ],
+      "strongest_objection": "The claimed gain is vs ChecklistOnlyAccepts, not vs JSON Schema. Tightening the schema plus jq decide/spawn likely ties reject/spawn.",
+      "strongest_simpler_explanation": "Enforce a tightened eval-report.schema.json with if/then plus a jq decide/spawn wrapper; do not keep a Go package to beat an unenforced checklist.",
+      "repeated_blocker": false,
+      "target_challenge": "yes — beating ChecklistOnlyAccepts is the wrong metric; a simpler schema can match reject/spawn on field presence",
+      "next_experiment": "Compare evalgate to a schema-only required-field checker on testdata/*.json and a fluent-empty fixture.",
+      "simpler_system": "checklist_or_schema",
+      "simpler_system_outcome": "ties",
+      "findings": [
+        {
+          "severity": "reject",
+          "summary": "Schema-only checker ties on field presence; ChecklistOnlyAccepts is handicapped",
+          "evidence": "testdata/rubber_stamp.json is schema-valid but fails Validate only on short vacuousEvidence. Spawn equals a filter over reject|risk proposed_task.",
+          "proposed_task": {
+            "title": "Compare evalgate to a non-handicapped schema-only checker",
+            "workstream": "quality",
+            "type": "experiment",
+            "hypothesis": "A required-field schema checker matches evalgate on valid_pass/valid_reject shape and accepts rubber_stamp.json.",
+            "falsification_condition": "The schema-only checker rejects testdata/rubber_stamp.json or fails to accept testdata/valid_pass.json."
+          }
+        }
+      ]
+    },
+    {
+      "id": "performance_critic",
+      "verdict": "PASS",
+      "evidence": [
+        "internal/evalgate/gate.go DecodeReport caps at MaxReportBytes=256KiB. go test -race ./internal/evalgate/ ~1.0s. TestGate_DecideLatency budgets 200 Decide calls at 200ms. cmd/evalgate/main.go makes 0 model calls."
+      ],
+      "strongest_objection": "TestGate_DecideLatency is a loose wall-clock budget on already-decoded reports, not ns/op on a 256KiB payload.",
+      "strongest_simpler_explanation": "A CI JSON Schema check on the same bounded file is the same cost class without a Go package.",
+      "repeated_blocker": false,
+      "target_challenge": "no — this is an offline JSON gate, not a colony throughput path",
+      "next_experiment": "Time DecodeReport+Decide on a near-MaxReportBytes report.",
+      "measurements": {
+        "wall_time": "go test -race ./internal/evalgate/ ~1.0s; Decide 200-call budget 200ms",
+        "model_calls": "0",
+        "dollars": "0",
+        "worker_wakeups": "0",
+        "event_amplification": "none"
+      }
+    },
+    {
+      "id": "failure_critic",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "internal/evalgate/gate_test.go TestGate_MalformedAndHugeInputs: DecodeReport rejects oversized and malformed JSON; Validate(nil) errors; Spawn(nil) is empty.",
+        "LoadReport in internal/evalgate/gate.go uses os.ReadFile before LimitReader, so the CLI size bound is post-hoc."
+      ],
+      "strongest_objection": "The agent-facing path slurps the file unbounded before MaxReportBytes applies.",
+      "strongest_simpler_explanation": "A size-capped json.Decoder plus JSON Schema rejects malformed reports without a custom failure model.",
+      "repeated_blocker": false,
+      "target_challenge": "no — file-shaped gate, not a worker lease protocol",
+      "next_experiment": "Stat/LimitReader in LoadReport so CLI cannot allocate more than MaxReportBytes+1.",
+      "perturbations_considered": [
+        "oversized_json",
+        "malformed_json",
+        "nil_report",
+        "duplicate_evaluators",
+        "stale_schema_version",
+        "inconsistent_composite",
+        "missing_proposed_task",
+        "replay_reject_report"
+      ],
+      "findings": [
+        {
+          "severity": "risk",
+          "summary": "LoadReport/CLI size bound is post-hoc, not a memory fence",
+          "evidence": "internal/evalgate/gate.go LoadReport does os.ReadFile before DecodeReport LimitReader.",
+          "proposed_task": {
+            "title": "Bound LoadReport memory before decoding evalgate JSON",
+            "workstream": "quality",
+            "type": "implementation",
+            "hypothesis": "A file larger than MaxReportBytes fails via LoadReport without reading more than MaxReportBytes+1 bytes.",
+            "falsification_condition": "LoadReport on a >MaxReportBytes tempfile succeeds or reads the whole file first."
+          }
+        }
+      ]
+    },
+    {
+      "id": "slop_evaluator",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "cmd/evalgate/main.go is a 77-line wrapper; no CI script execs the binary. docs/tasks/eval-report.schema.json is never loaded and requires only id+verdict.",
+        "internal/evalgate/gate_test.go mixes scenario tests (rubber stamp, buried finding) with field-mirror tests. TaskMayBecomeDone is test-only."
+      ],
+      "strongest_objection": "Four encodings of one form contract plus a status gate nothing calls mistakes gate architecture for independent evaluation.",
+      "strongest_simpler_explanation": "Keep EVALUATORS.md, the five prompt packets, and one Validate/Decide implementation. Delete the unused CLI and schema until a status writer exists.",
+      "repeated_blocker": false,
+      "target_challenge": "The hypothesis is independent judgment; this artifact is a report-shape checker.",
+      "next_experiment": "Wire Decide to status=done and reject fluent-empty reports. Give the CLI a real caller or delete it.",
+      "invariant_named": "A report cannot Advance if any active evaluator or reject finding is REJECT, if composite disagrees with deriveVerdict, or if reject/risk findings lack proposed_task.",
+      "deletion_candidate": "ChecklistOnlyAccepts in the production package; TaskMayBecomeDone until it has a non-test caller.",
+      "findings": [
+        {
+          "severity": "risk",
+          "summary": "Unused CLI and looser unused schema duplicate the Go gate",
+          "evidence": "cmd/evalgate has no production caller; docs/tasks/eval-report.schema.json is never loaded.",
+          "proposed_task": {
+            "title": "Give evalgate CLI a real caller or delete it",
+            "workstream": "quality",
+            "type": "implementation",
+            "hypothesis": "check-tasks will be the CLI's non-test caller; otherwise cmd/evalgate should be deleted.",
+            "falsification_condition": "After the next round the CLI still has no non-test caller and is still in tree."
+          }
+        }
+      ]
+    }
+  ]
+}

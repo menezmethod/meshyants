@@ -218,9 +218,9 @@
       "workstream": "quality",
       "type": "continuous_gate",
       "priority": 1,
-      "status": "ready",
+      "status": "done",
       "depends_on": [],
-      "hypothesis": "Independent adversarial evaluation will prevent us from mistaking complexity, benchmark leakage, or attractive demos for progress.",
+      "hypothesis": "A machine-checked evaluator report can reject work, require a strongest simpler explanation, and turn negatives into task drafts. It does not replace independent scientific judgment; it blocks rubber stamps, buried negatives, and done-without-evidence.",
       "deliverables": [
         "scientific skeptic",
         "scheduler/simple-system critic",
@@ -235,6 +235,15 @@
       ],
       "evidence_required": [
         "evaluation reports attached to material changes"
+      ],
+      "evidence": [
+        "internal/evalgate/",
+        "cmd/evalgate/",
+        "docs/tasks/eval-report.schema.json",
+        "docs/tasks/evaluators/",
+        "docs/results/MESH-108/eval-report.json",
+        "docs/results/MESH-108/round-3.json",
+        "docs/results/MESH-108/spawned-tasks-round-3.json"
       ]
     },
     {

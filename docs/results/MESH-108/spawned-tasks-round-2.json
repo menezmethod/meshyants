@@ -1,0 +1,32 @@
+[
+  {
+    "suggested_id": "MESH-108-F1",
+    "title": "Reject token-gamed and not_applicable rubber-stamp reports",
+    "workstream": "quality",
+    "type": "implementation",
+    "hypothesis": "Path-or-metric anchors plus a ban on all-not_applicable will reject the token-game fixtures.",
+    "falsification_condition": "MESH-108 is elegant or all-not_applicable still Advances.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Token-gamed and not_applicable rubber stamps still Advance"
+  },
+  {
+    "suggested_id": "MESH-108-F2",
+    "title": "Drop the Go-vs-schema advantage claim",
+    "workstream": "quality",
+    "type": "research",
+    "hypothesis": "The success criteria can be met without claiming evalgate beats JSON Schema.",
+    "falsification_condition": "A later round again scores simpler_baseline_advantage \u003e= 3 against a field-presence-only schema.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Pattern-tightened schema ties evalgate on measured fixtures"
+  },
+  {
+    "suggested_id": "MESH-108-F3",
+    "title": "Bound CheckTasks memory before decoding tasks.json",
+    "workstream": "quality",
+    "type": "implementation",
+    "hypothesis": "A tasks.json larger than MaxReportBytes fails without a full slurp.",
+    "falsification_condition": "CheckTasks on a \u003eMaxReportBytes tempfile succeeds or slurps first.",
+    "source_task_id": "MESH-108",
+    "source_finding": "CheckTasks size bound is post-hoc"
+  }
+]

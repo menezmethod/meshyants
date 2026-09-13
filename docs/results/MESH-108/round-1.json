@@ -1,0 +1,39 @@
+{
+  "task_id": "MESH-108",
+  "round": 1,
+  "hypothesis": "Independent adversarial evaluation will prevent us from mistaking complexity, benchmark leakage, or attractive demos for progress.",
+  "falsification_condition": "A vacuous PASS advances; a REJECT fails to block status=done; a reject/risk finding produces no task draft; a simpler checklist/schema matches reject/spawn.",
+  "implementation_config_sha": "1fc98df",
+  "benchmark_inputs": {
+    "fixtures": [
+      "internal/evalgate/testdata/valid_pass.json",
+      "internal/evalgate/testdata/valid_reject.json",
+      "internal/evalgate/testdata/rubber_stamp.json"
+    ],
+    "baseline": "ChecklistOnlyAccepts (substring scientific+pass+scheduler)"
+  },
+  "random_seeds": [],
+  "scorecard": {
+    "scientific_validity": 1,
+    "simpler_baseline_advantage": 1,
+    "performance_cost": 4,
+    "resilience_scalability": 2,
+    "code_experiment_quality": 2,
+    "total": 10
+  },
+  "evaluator_verdicts": {
+    "scientific_skeptic": "REJECT",
+    "scheduler_critic": "REJECT",
+    "performance_critic": "PASS",
+    "failure_critic": "PASS WITH RISKS",
+    "slop_evaluator": "PASS WITH RISKS"
+  },
+  "composite_verdict": "REJECT",
+  "baseline_results": "ChecklistOnlyAccepts accepted rubber-stamp prose that short-token Validate rejected. Fresh-context judges found the baseline handicapped: eval-report.schema.json still accepts rubber_stamp.json, and fluent 24+ character aesthetic evidence advances under vacuousEvidence.",
+  "cost_latency_model_calls": "go test -race ./internal/evalgate/ ~1.0s; TestGate_DecideLatency 200 in-memory Decide calls <200ms; 0 model calls in the gate. Five fresh-context evaluator subagents used for judging.",
+  "strongest_objection": "The published falsification already holds: fluent aesthetic-only evidence (len>=24, no path/metric) still Advances. Form-checking is not independent evaluation, TaskMayBecomeDone has no non-test caller, and a schema+jq checker likely ties the claimed reject/spawn advantage.",
+  "previous_round_delta": null,
+  "next_action": "Reject fluent-empty evidence; fence LoadReport; wire check-tasks so done requires an advancing report; replace the handicapped checklist baseline with a schema-only field checker; persist spawned drafts.",
+  "loop_decision": "revise",
+  "eval_report": "docs/results/MESH-108/eval-report-round-1.json"
+}

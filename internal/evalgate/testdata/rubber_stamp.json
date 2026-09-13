@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "task_id": "MESH-DEMO",
+  "hypothesis": "The new architecture is progress.",
+  "falsification_condition": "A reviewer says no.",
+  "round": 1,
+  "composite_verdict": "PASS",
+  "scorecard": {
+    "scientific_validity": 5,
+    "simpler_baseline_advantage": 5,
+    "performance_cost": 5,
+    "resilience_scalability": 5,
+    "code_experiment_quality": 5
+  },
+  "baseline_results": "n/a, the design is clearly better",
+  "cost_latency_model_calls": "not measured",
+  "evaluators": [
+    {
+      "id": "scientific_skeptic",
+      "verdict": "PASS",
+      "evidence": ["looks good"],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "none needed",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "ship it",
+      "what_would_reverse_conclusion": "if it broke"
+    },
+    {
+      "id": "scheduler_critic",
+      "verdict": "PASS",
+      "evidence": ["elegant"],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "a queue would be worse",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "more agents",
+      "simpler_system": "priority_queue",
+      "simpler_system_outcome": "loses"
+    },
+    {
+      "id": "performance_critic",
+      "verdict": "PASS",
+      "evidence": ["fast enough"],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "measure later",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "optimize later",
+      "measurements": {
+        "vibes": "good"
+      }
+    },
+    {
+      "id": "failure_critic",
+      "verdict": "PASS",
+      "evidence": ["seems fine"],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "retry on failure",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "chaos later",
+      "perturbations_considered": ["none"]
+    },
+    {
+      "id": "slop_evaluator",
+      "verdict": "PASS",
+      "evidence": ["clean architecture"],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "keep the new types",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "add more types",
+      "invariant_named": "quality",
+      "deletion_candidate": "nothing"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "task_id": "MESH-DEMO",
+  "hypothesis": "The new architecture is progress.",
+  "falsification_condition": "A reviewer says no.",
+  "round": 1,
+  "composite_verdict": "PASS",
+  "scorecard": {
+    "scientific_validity": 5,
+    "simpler_baseline_advantage": 5,
+    "performance_cost": 5,
+    "resilience_scalability": 5,
+    "code_experiment_quality": 5
+  },
+  "baseline_results": "the design is clearly better so no baseline was recorded",
+  "cost_latency_model_calls": "not measured",
+  "evaluators": [
+    {
+      "id": "scientific_skeptic",
+      "verdict": "PASS",
+      "evidence": ["The architecture is elegant and clearly better than a queue."],
+      "strongest_objection": "none worth recording",
+      "strongest_simpler_explanation": "none needed because this is obviously better",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "ship the new types",
+      "what_would_reverse_conclusion": "if it somehow broke in production"
+    },
+    {
+      "id": "scheduler_critic",
+      "verdict": "PASS",
+      "evidence": ["A centralized router would be a less inspiring design."],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "a queue would be worse",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "add more agents",
+      "simpler_system": "priority_queue",
+      "simpler_system_outcome": "loses"
+    },
+    {
+      "id": "performance_critic",
+      "verdict": "PASS",
+      "evidence": ["Performance feels snappy and should scale just fine."],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "measure later",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "optimize later",
+      "measurements": {
+        "vibes": "good"
+      }
+    },
+    {
+      "id": "failure_critic",
+      "verdict": "PASS",
+      "evidence": ["Failure handling looks robust enough for a demo."],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "retry on failure",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "chaos later",
+      "perturbations_considered": ["none"]
+    },
+    {
+      "id": "slop_evaluator",
+      "verdict": "PASS",
+      "evidence": ["This is a clean architecture with lots of thoughtful types."],
+      "strongest_objection": "none",
+      "strongest_simpler_explanation": "keep the new types",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "add more types",
+      "invariant_named": "quality",
+      "deletion_candidate": "nothing"
+    }
+  ]
+}
