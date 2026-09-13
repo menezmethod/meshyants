@@ -1,0 +1,52 @@
+[
+  {
+    "suggested_id": "MESH-108-F1",
+    "title": "Reject fluent-but-empty evaluator evidence",
+    "workstream": "quality",
+    "type": "implementation",
+    "hypothesis": "Validate will reject reports whose evidence is only aesthetic prose, including strings longer than 24 characters with no path, metric, or named artifact.",
+    "falsification_condition": "A fixture whose evidence is fluent aesthetic text with no path or metric still returns Advance=true.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Vacuous PASS still advances when evidence is fluent aesthetic prose"
+  },
+  {
+    "suggested_id": "MESH-108-F2",
+    "title": "Bind evalgate to the research-loop done transition",
+    "workstream": "quality",
+    "type": "implementation",
+    "hypothesis": "A task cannot become status=done without a valid advancing evalgate Decision.",
+    "falsification_condition": "tasks.json can still be set to done with no report or with composite_verdict=REJECT.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Done-status path is not bound to evalgate"
+  },
+  {
+    "suggested_id": "MESH-108-F3",
+    "title": "Compare evalgate to a non-handicapped schema-only checker",
+    "workstream": "quality",
+    "type": "experiment",
+    "hypothesis": "A required-field schema checker matches evalgate on valid_pass/valid_reject shape and accepts rubber_stamp.json.",
+    "falsification_condition": "The schema-only checker rejects testdata/rubber_stamp.json or fails to accept testdata/valid_pass.json.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Schema-only checker ties on field presence; ChecklistOnlyAccepts is handicapped"
+  },
+  {
+    "suggested_id": "MESH-108-F4",
+    "title": "Bound LoadReport memory before decoding evalgate JSON",
+    "workstream": "quality",
+    "type": "implementation",
+    "hypothesis": "A file larger than MaxReportBytes fails via LoadReport without reading more than MaxReportBytes+1 bytes.",
+    "falsification_condition": "LoadReport on a \u003eMaxReportBytes tempfile succeeds or reads the whole file first.",
+    "source_task_id": "MESH-108",
+    "source_finding": "LoadReport/CLI size bound is post-hoc, not a memory fence"
+  },
+  {
+    "suggested_id": "MESH-108-F5",
+    "title": "Give evalgate CLI a real caller or delete it",
+    "workstream": "quality",
+    "type": "implementation",
+    "hypothesis": "check-tasks will be the CLI's non-test caller; otherwise cmd/evalgate should be deleted.",
+    "falsification_condition": "After the next round the CLI still has no non-test caller and is still in tree.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Unused CLI and looser unused schema duplicate the Go gate"
+  }
+]
