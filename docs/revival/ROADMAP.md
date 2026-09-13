@@ -4,13 +4,13 @@
 
 Do not add major v2 code until these are decided:
 
-1. Exact hypothesis and baseline harnesses.
+1. Exact hypothesis and baseline harnesses. Locked for comparison rules: `docs/experiments/CONTRACT.md`.
 2. Worker phenotype schema.
 3. Task/lease/checkpoint state machine.
 4. Topology + signal semantics.
-5. Evaluation metrics and falsification criteria.
+5. Evaluation metrics and falsification criteria. Locked in the same contract.
 
-Exit condition: another engineer can implement Experiment A without inventing missing architecture.
+Exit condition: another engineer can implement Experiment A without inventing missing architecture. MESH-101 locks the experiment contract; MESH-102 still owns phenotype/lease semantics.
 
 ## Phase 1 — minimum experiment
 

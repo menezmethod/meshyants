@@ -1,0 +1,63 @@
+{
+  "contract_version": 1,
+  "run_id": "phase-a-synthetic-v1",
+  "phase": "A",
+  "hypothesis": "On a heterogeneous deterministic skill mix with one follow-up spawn, local MeshyAnts allocation can match or beat a capability-matched central router on success or quality without exceeding the shared budget.",
+  "falsification": "If manager_worker or central_router matches or beats meshyants on all primary allocation metrics within noise across 3 seeds, Phase A allocation advantage is falsified for this fixture.",
+  "workload": {
+    "id": "phase-a-synthetic-v1",
+    "class": "heterogeneous_uncertain",
+    "tasks_ref": "tasks.json",
+    "decisive_swarm_benchmark": true
+  },
+  "worker_pool_ref": "pool.json",
+  "single_agent_phenotype_id": "generalist",
+  "single_agent_selection_rule": "named",
+  "single_agent_justification": "generalist is the only phenotype that implements both json.transform and text.classify, so it is the strongest solo worker on this fixture.",
+  "tools": ["json.transform", "text.classify"],
+  "models": [],
+  "budget": {
+    "max_wall_ms": 60000,
+    "max_model_calls": 0,
+    "max_input_tokens": 0,
+    "max_output_tokens": 0,
+    "max_cost_micros": 0,
+    "max_worker_wakeups": 10000,
+    "max_exclusive_lease_attempts": 0
+  },
+  "systems": [
+    "single_agent",
+    "manager_worker",
+    "central_router",
+    "meshyants"
+  ],
+  "repeats": 3,
+  "seeds": [1, 2, 3],
+  "rng_algorithm": "go-math-rand-v2-pcg",
+  "failure_injection": null,
+  "metrics": [
+    "task_success_rate",
+    "quality",
+    "wall_time_ms",
+    "cost_micros",
+    "model_calls",
+    "input_tokens",
+    "output_tokens",
+    "duplicate_work_rate",
+    "wakeup_count",
+    "failed_claim_count",
+    "allocation_message_count",
+    "coordination_model_calls",
+    "emergence_delta"
+  ],
+  "comparison": {
+    "win_rule": "paired_sign_80",
+    "noise": {
+      "task_success_rate": 0.05,
+      "quality": 0.05,
+      "relative_cost_or_time": 0.1,
+      "duplicate_work_rate": 0.05
+    }
+  },
+  "allow_meshyants_coordination_llm": false
+}

@@ -1,5 +1,7 @@
 # Experiments
 
+Phase A–D comparison rules, metric math, budget equality, and falsification are locked in [`docs/experiments/CONTRACT.md`](../experiments/CONTRACT.md). Do not invent metrics, denominators, or win rules in a harness.
+
 ## Phase A — isolate routing
 
 Hold models/tools/tasks/budget constant.
