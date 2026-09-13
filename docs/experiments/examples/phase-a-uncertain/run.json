@@ -1,14 +1,14 @@
 {
   "contract_version": 1,
-  "run_id": "phase-a-synthetic-v1",
+  "run_id": "phase-a-uncertain-v1",
   "phase": "A",
-  "hypothesis": "On a fully labeled deterministic skill DAG, a locked static capability router and MeshyAnts should tie on success and quality. This fixture calibrates the harness; it cannot support a swarm-advantage claim.",
-  "falsification": "If a correctly implemented manager_worker or central_router loses to meshyants on success or quality here, the baseline is handicapped or the harness is buggy — not a MeshyAnts win.",
+  "hypothesis": "On a skill mix whose visible labels are empty or wrong for at least 25% of tasks, MeshyAnts outcome-aware allocation can beat a locked static capability router on success or quality under the same budget.",
+  "falsification": "If manager_worker or central_router is tied-or-better on every primary metric (including an all-tie) across 3 seeds, Phase A allocation advantage is falsified for this fixture.",
   "workload": {
-    "id": "phase-a-synthetic-v1",
-    "class": "homogeneous_dag",
+    "id": "phase-a-uncertain-v1",
+    "class": "heterogeneous_uncertain",
     "tasks_ref": "tasks.json",
-    "decisive_swarm_benchmark": false
+    "decisive_swarm_benchmark": true
   },
   "worker_pool_ref": "pool.json",
   "single_agent_phenotype_id": "generalist",

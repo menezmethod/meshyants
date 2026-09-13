@@ -1,0 +1,35 @@
+{
+  "id": "phase-a-uncertain-pool-v1",
+  "instances": [
+    {
+      "instance_id": "json-a",
+      "phenotype_id": "json-specialist",
+      "capabilities": ["json.transform"],
+      "simulate_exec_ms": 10
+    },
+    {
+      "instance_id": "json-b",
+      "phenotype_id": "json-specialist",
+      "capabilities": ["json.transform"],
+      "simulate_exec_ms": 10
+    },
+    {
+      "instance_id": "text-a",
+      "phenotype_id": "text-specialist",
+      "capabilities": ["text.classify"],
+      "simulate_exec_ms": 10
+    },
+    {
+      "instance_id": "text-b",
+      "phenotype_id": "text-specialist",
+      "capabilities": ["text.classify"],
+      "simulate_exec_ms": 10
+    },
+    {
+      "instance_id": "gen-a",
+      "phenotype_id": "generalist",
+      "capabilities": ["json.transform", "text.classify"],
+      "simulate_exec_ms": 40
+    }
+  ]
+}

@@ -28,6 +28,12 @@ func Load(path string) (*RunSpec, error) {
 	}
 	spec.Tasks = tasks
 	spec.Pool = pool
+	spec.baseDir = base
+	if spec.LeaseContractRef != "" {
+		if _, err := os.Stat(filepath.Join(base, spec.LeaseContractRef)); err != nil {
+			return nil, fmt.Errorf("lease_contract_ref %q: %w", spec.LeaseContractRef, err)
+		}
+	}
 	if err := spec.Validate(); err != nil {
 		return nil, err
 	}

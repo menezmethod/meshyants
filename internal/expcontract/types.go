@@ -48,9 +48,18 @@ const (
 	MetricRecoveryTime    = "recovery_time_ms"
 	MetricEmergenceDelta  = "emergence_delta"
 	WinRulePairedSign80   = "paired_sign_80"
-	WinRuleBootstrapCI95  = "bootstrap_ci_95"
 	SelectHighestSolo     = "highest_solo_success"
 	SelectNamed           = "named"
+
+	ToolJSONAddCount  = "json.add_count"
+	ToolJSONPickKeys  = "json.pick_keys"
+	ToolJSONMerge     = "json.merge"
+	ToolJSONSortKeys  = "json.sort_keys"
+	ToolJSONUnwrapMsg = "json.unwrap_msg"
+	ToolJSONWrapText  = "json.wrap_text"
+	ToolTextClassify  = "text.classify"
+
+	FailureNone = "none"
 )
 
 var requiredSystems = []string{
@@ -72,6 +81,7 @@ var requiredSecondaryMetrics = []string{
 	MetricDuplicateWork,
 	MetricWakeups,
 	MetricFailedClaims,
+	MetricAllocMessages,
 	MetricCoordModelCalls,
 }
 
@@ -120,42 +130,41 @@ var allowedMetrics = map[string]bool{
 	MetricEmergenceDelta:  true,
 }
 
-var allocationSystems = map[string]bool{
-	SystemManagerWorker:  true,
-	SystemCentralRouter:  true,
-	SystemMeshyAnts:      true,
-	SystemFlatBlackboard: true,
-}
-
 // RunSpec is a locked four-arm (or five-arm) experiment description.
 type RunSpec struct {
-	ContractVersion               int              `json:"contract_version"`
-	RunID                         string           `json:"run_id"`
-	Phase                         string           `json:"phase"`
-	Hypothesis                    string           `json:"hypothesis"`
-	Falsification                 string           `json:"falsification"`
-	Workload                      WorkloadRef      `json:"workload"`
-	WorkerPoolRef                 string           `json:"worker_pool_ref"`
-	SingleAgentPhenotypeID        string           `json:"single_agent_phenotype_id"`
-	SingleAgentSelectionRule      string           `json:"single_agent_selection_rule"`
-	SingleAgentJustification      string           `json:"single_agent_justification,omitempty"`
-	LeaseContractRef              string           `json:"lease_contract_ref,omitempty"`
-	Tools                         []string         `json:"tools"`
-	Models                        []Model          `json:"models"`
-	Tokenizer                     string           `json:"tokenizer,omitempty"`
-	PriceBook                     map[string]Price `json:"price_book,omitempty"`
-	Budget                        Budget           `json:"budget"`
-	Systems                       []string         `json:"systems"`
-	Repeats                       int              `json:"repeats"`
-	Seeds                         []int            `json:"seeds"`
-	RNGAlgorithm                  string           `json:"rng_algorithm"`
-	FailureInjection              any              `json:"failure_injection"`
-	Metrics                       []string         `json:"metrics"`
-	Comparison                    Comparison       `json:"comparison"`
-	AllowMeshyantsCoordinationLLM bool             `json:"allow_meshyants_coordination_llm,omitempty"`
+	ContractVersion               int               `json:"contract_version"`
+	RunID                         string            `json:"run_id"`
+	Phase                         string            `json:"phase"`
+	Hypothesis                    string            `json:"hypothesis"`
+	Falsification                 string            `json:"falsification"`
+	Workload                      WorkloadRef       `json:"workload"`
+	WorkerPoolRef                 string            `json:"worker_pool_ref"`
+	SingleAgentPhenotypeID        string            `json:"single_agent_phenotype_id"`
+	SingleAgentSelectionRule      string            `json:"single_agent_selection_rule"`
+	SingleAgentJustification      string            `json:"single_agent_justification,omitempty"`
+	LeaseContractRef              string            `json:"lease_contract_ref,omitempty"`
+	Tools                         []string          `json:"tools"`
+	Models                        []Model           `json:"models"`
+	Tokenizer                     string            `json:"tokenizer,omitempty"`
+	PriceBook                     map[string]Price  `json:"price_book,omitempty"`
+	Budget                        Budget            `json:"budget"`
+	Systems                       []string          `json:"systems"`
+	Repeats                       int               `json:"repeats"`
+	Seeds                         []int             `json:"seeds"`
+	RNGAlgorithm                  string            `json:"rng_algorithm"`
+	FailureInjection              *FailureInjection `json:"failure_injection"`
+	Metrics                       []string          `json:"metrics"`
+	Comparison                    Comparison        `json:"comparison"`
+	AllowMeshyantsCoordinationLLM bool              `json:"allow_meshyants_coordination_llm,omitempty"`
 
-	Tasks *TaskSet    `json:"-"`
-	Pool  *WorkerPool `json:"-"`
+	Tasks   *TaskSet    `json:"-"`
+	Pool    *WorkerPool `json:"-"`
+	baseDir string      `json:"-"`
+}
+
+// FailureInjection is closed. Contract v1 allows only null or {kind: none}.
+type FailureInjection struct {
+	Kind string `json:"kind"`
 }
 
 type WorkloadRef struct {
@@ -184,6 +193,7 @@ type Budget struct {
 	MaxCostMicros             int `json:"max_cost_micros"`
 	MaxWorkerWakeups          int `json:"max_worker_wakeups"`
 	MaxExclusiveLeaseAttempts int `json:"max_exclusive_lease_attempts"`
+	MaxAllocationMessages     int `json:"max_allocation_messages"`
 }
 
 type Comparison struct {
@@ -207,6 +217,8 @@ type Task struct {
 	ID                   string   `json:"id"`
 	Class                string   `json:"class"`
 	RequiredCapabilities []string `json:"required_capabilities"`
+	TrueCapabilities     []string `json:"true_capabilities,omitempty"`
+	Tool                 string   `json:"tool"`
 	Arrival              Arrival  `json:"arrival"`
 	ExclusiveSideEffect  bool     `json:"exclusive_side_effect"`
 	TimeoutMS            int      `json:"timeout_ms"`

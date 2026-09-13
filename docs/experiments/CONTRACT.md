@@ -18,11 +18,11 @@ This document is the only place an agent may take comparison rules from. If a ru
 
 **Evidence against:** A schema can still be gamed by a weak single-agent phenotype or a workload that secretly favors one arm.
 
-**Missing evidence:** No harness results yet (MESH-103). No locked phenotype schema yet (MESH-102).
+**Missing evidence:** No harness results yet (MESH-103). No locked phenotype schema yet (MESH-102). Reputation/claiming is MESH-104; this contract only locks what that allocator may see.
 
-**Falsification test:** The validator accepts a handicapped spec, or another agent still has to invent a metric, budget rule, or verdict rule to run Phase A.
+**Falsification test:** The validator accepts a handicapped spec, or another agent still has to invent tool semantics, baseline assignment, mismatch behavior, a metric, a budget rule, or verdict math.
 
-**Decision / confidence:** Lock a small machine-checked contract now. Medium-high confidence this prevents unfalsifiable framework-building; low confidence the first synthetic workload predicts real user value.
+**Decision / confidence:** Lock a machine-checked contract plus two fixtures. Calibration DAG is not decisive. Medium confidence this stops invented rules; still low confidence the uncertain fixture predicts real user work.
 
 ## What this contract is not
 
@@ -42,9 +42,9 @@ A Phase A run spec MUST include these four arms:
 | ID | Meaning | Worker materialization |
 |---|---|---|
 | `single_agent` | One worker, no manager, no router, no field | Exactly one instance of `single_agent_phenotype_id` |
-| `manager_worker` | Deterministic manager assigns each ready task to a worker | Full `worker_pool` |
-| `central_router` | Capability-matched central router (v1 `routing.Router` is the starting point, not a free pass) | Full `worker_pool` |
-| `meshyants` | Local eligibility + thresholds + contextual reputation + inhibition + exploration (MESH-104) | Full `worker_pool` |
+| `manager_worker` | Central queue + **AssignStatic** (below) | Full `worker_pool` |
+| `central_router` | Same **AssignStatic** math; different control locus (push vs match) | Full `worker_pool` |
+| `meshyants` | May use outcomes. Must not read `true_capabilities`. MESH-104 implements it. | Full `worker_pool` |
 
 Optional fifth arm: `flat_blackboard` (volunteer claims, no reputation/inhibition). Allowed because EXPERIMENTS.md lists it. Not required to lock MESH-101.
 
@@ -61,7 +61,14 @@ Optional fifth arm: `flat_blackboard` (volunteer claims, no reputation/inhibitio
 | `perturbation` | Worker death, cold start, workload shift | Yes, for Phase C adaptation — not Phase A. |
 | `durable_dag` | SonicTale-like write → TTS → finalize | No. Durability/failure only. Setting `decisive_swarm_benchmark: true` on this class is invalid. |
 
-The first locked fixture is `phase-a-synthetic-v1` (`heterogeneous_uncertain`).
+Two locked fixtures:
+
+| Fixture | Class | Decisive? | Role |
+|---|---|---|---|
+| `phase-a-synthetic-v1` | `homogeneous_dag` | no | Harness calibration. Competent static routers should score success=1. A MeshyAnts win on success/quality here is a bug smell. |
+| `phase-a-uncertain-v1` | `heterogeneous_uncertain` | yes | Phase A claim. ≥25% of tasks have empty or wrong *visible* labels. |
+
+`decisive_swarm_benchmark: true` is invalid on `homogeneous_dag`, `durable_dag`, or any task set with `uncertain_fraction < 0.25`.
 
 ## Benchmark task schema
 
@@ -69,7 +76,9 @@ Each task MUST provide:
 
 - `id` (unique in the set)
 - `class` (one of the four workload classes)
-- `required_capabilities` (string labels; empty means any worker may attempt)
+- `required_capabilities` (visible labels; empty means the static baseline may assign any idle worker)
+- `true_capabilities` (execution requirement; omitted means equal to `required_capabilities`). **Allocators must not read this field.**
+- `tool` (closed kind; see Tools)
 - `arrival`: `initial` or `{ "on_success_of": "<task_id>" }` or `{ "on_failure_of": "<task_id>" }`
 - `exclusive_side_effect` (bool)
 - `timeout_ms`, `max_attempts` (≥ 1)
@@ -118,6 +127,7 @@ One envelope, copied to every arm. Per-arm budget overrides are invalid.
 | `max_cost_micros` | USD × 1e6 | Provider list price recorded in the run spec `price_book`, or `0` when `models` is empty. |
 | `max_worker_wakeups` | count | A wakeup is a worker leaving idle to inspect or execute work. |
 | `max_exclusive_lease_attempts` | count | Meaningful after MESH-102. |
+| `max_allocation_messages` | count | Assign/claim/inhibit messages. |
 
 Rules:
 
@@ -172,8 +182,9 @@ Repeats:
 Win on one metric, one pair of arms, same group:
 
 1. Compute per-seed paired differences.
-2. Significant if the mean difference exceeds the noise threshold **and** at least `ceil(0.8 * repeats)` paired seeds have the same sign (or a bootstrap 95% CI excludes 0 — either rule, named in the run spec).
+2. Significant if the mean difference exceeds the noise threshold **and** at least `ceil(0.8 * repeats)` paired seeds have the same sign. `|diff| <= noise` is a tie, including float error on the threshold.
 3. Otherwise `tie`.
+4. The only win rule is `paired_sign_80`.
 
 Default noise thresholds:
 
@@ -188,9 +199,9 @@ Verdict vocabulary (allocation group, Phase A):
 | Verdict | Meaning |
 |---|---|
 | `meshyants_advantage` | MeshyAnts is significant-better on ≥1 primary metric and not significant-worse on any other primary metric |
-| `falsified` | `central_router` or `manager_worker` is tied-or-better on every primary metric **and** significant-better on at least one |
+| `falsified` | A simpler arm is tied-or-better on every primary and significant-better on at least one; **or** the fixture is decisive and MeshyAnts has no significant primary advantage (all-tie included) |
 | `mixed` | Each side is significant-better on at least one primary metric |
-| `inconclusive` | No significant differences (including all-tie), or repeats below the minimum |
+| `inconclusive` | No significant differences on a **non-decisive** fixture, protocol violation, or repeats below the minimum |
 
 A MeshyAnts wall-time win that is only vs `single_agent` is `inconclusive` for allocation.
 
@@ -216,9 +227,9 @@ Reuse, do not re-encode:
 - Workers advertise with `CapabilityAdvertisement`
 - Outcomes travel as `PheromoneRecord` (`TODO`, `INSIGHT`, `DANGER`, `SAFE`) with decay
 - `ReputationEvent` is allowed as a slow signal; it is not a Phase A requirement
-- Existing `routing.Router` is the seed of `central_router`, not automatically a competent baseline — MESH-103 must give it the same capability labels the other arms see
+- Existing `routing.Router` is **not** the Phase A baseline. Phase A `central_router` and `manager_worker` MUST call `AssignStatic` in `internal/expcontract`. v1 `routing.Router` may be used only if it implements that policy on the same visible labels.
 
-`requirements_json` on a `TaskAtom` SHOULD carry `required_capabilities` from the task spec so v1 routing can participate without a parallel task type.
+`requirements_json` on a `TaskAtom` SHOULD carry visible `required_capabilities` only, never `true_capabilities`.
 
 ## What MESH-103 must emit
 
@@ -226,6 +237,44 @@ Each arm-repeat writes one result object matching `schema/run-result.schema.json
 
 A comparison object matching `schema/comparison.schema.json` is required before a verdict may be recorded.
 
-## First fixture
+## Tools (locked)
 
-`docs/experiments/examples/phase-a-synthetic/` is the worked example: 12 deterministic tasks, mixed capabilities, one follow-up spawn, no models, no exclusive effects. Another agent should be able to implement a harness against those three JSON files without adding rules.
+A capable worker MUST implement these exact functions (`internal/expcontract.Execute`). A worker missing `true_capabilities` MUST return `{"error":"capability_mismatch"}` and fail the verifier.
+
+| Tool | Input | Output |
+|---|---|---|
+| `json.add_count` | `{items: [...]}` | `{items, n: len(items)}` |
+| `json.pick_keys` | `{keep: [k...], ...}` | object of named keys |
+| `json.merge` | `{left, right}` | shallow merge, right wins |
+| `json.sort_keys` | `{keys: [..]}` | `{keys}` sorted ascending |
+| `json.unwrap_msg` | `{raw: {msg}}` | `{text: raw.msg}` |
+| `json.wrap_text` | any | `{wrapped: true, n: 1}` |
+| `text.classify` | `{text}` | `{label}`: `infra` if text contains `disk` or `/var`; `auth` if `token` or `user`; `billing` if `invoice` or `unpaid`; else `other` |
+
+`effective_exec_ms = task.simulate_exec_ms + worker.simulate_exec_ms`.
+
+These fixtures use `binary_from_verifier`, so `quality == task_success_rate`. That is honest, not a second signal. Do not invent a quality rubric.
+
+## AssignStatic (locked baselines)
+
+`manager_worker` and `central_router` use the same function (`internal/expcontract.AssignStatic`):
+
+1. Consider only **idle** workers that are `VisibleEligible` (advertised caps ⊇ visible `required_capabilities`, or any idle worker if visible labels are empty).
+2. Pick fewest capabilities (most specific), then lowest `simulate_exec_ms`, then `instance_id`.
+3. If none eligible, the task stays queued. Do not assign a known-ineligible worker.
+4. Do **not** change assignment after a failed attempt.
+
+`meshyants` may use completed-task outcomes and advertised capabilities. It MUST NOT read `true_capabilities`. It MAY reassign after failure (that is the independent variable).
+
+`single_agent` always uses one instance of `single_agent_phenotype_id`.
+
+## Failure injection
+
+Contract v1 allows only `failure_injection: null` or `{"kind":"none"}`. Kinds `kill_worker`, `expire_lease`, `replay_message`, `stale_owner`, `duplicate_task`, `malformed_capability_ad` are reserved and invalid until a later contract version. `lease_contract_ref`, if set, must be a file that exists.
+
+## Fixtures
+
+- `docs/experiments/examples/phase-a-synthetic/` — labeled calibration DAG
+- `docs/experiments/examples/phase-a-uncertain/` — decisive Phase A fixture (5/12 tasks have empty or wrong visible labels)
+
+`go run ./cmd/expcontract validate` on either `run.json`. Import `Execute` / `AssignStatic` rather than reinventing them.

@@ -41,6 +41,9 @@ func (s *RunSpec) Validate() error {
 	if s.Workload.Class == ClassDurableDAG && s.Workload.DecisiveSwarmBenchmark {
 		add("durable_dag must not set decisive_swarm_benchmark=true")
 	}
+	if s.Workload.Class == ClassHomogeneousDAG && s.Workload.DecisiveSwarmBenchmark {
+		add("homogeneous_dag must not set decisive_swarm_benchmark=true")
+	}
 	if strings.TrimSpace(s.Workload.TasksRef) == "" {
 		add("workload.tasks_ref is required")
 	}
@@ -91,6 +94,12 @@ func (s *RunSpec) Validate() error {
 	if s.Budget.MaxWorkerWakeups < 1 {
 		add("budget.max_worker_wakeups must be >= 1")
 	}
+	if s.Budget.MaxAllocationMessages < 1 {
+		add("budget.max_allocation_messages must be >= 1")
+	}
+	if s.FailureInjection != nil && s.FailureInjection.Kind != FailureNone {
+		add("failure_injection.kind must be %q or the field must be null (other kinds reserved)", FailureNone)
+	}
 	if len(s.Models) == 0 {
 		if s.Budget.MaxModelCalls != 0 || s.Budget.MaxInputTokens != 0 || s.Budget.MaxOutputTokens != 0 || s.Budget.MaxCostMicros != 0 {
 			add("deterministic runs (empty models) must set token/call/cost caps to 0")
@@ -135,10 +144,8 @@ func (s *RunSpec) Validate() error {
 		}
 	}
 
-	switch s.Comparison.WinRule {
-	case WinRulePairedSign80, WinRuleBootstrapCI95:
-	default:
-		add("comparison.win_rule must be %s or %s", WinRulePairedSign80, WinRuleBootstrapCI95)
+	if s.Comparison.WinRule != WinRulePairedSign80 {
+		add("comparison.win_rule must be %s", WinRulePairedSign80)
 	}
 	if s.Comparison.Noise.TaskSuccessRate < 0 || s.Comparison.Noise.Quality < 0 || s.Comparison.Noise.RelativeCostOrTime < 0 {
 		add("comparison.noise thresholds must be >= 0")
@@ -203,6 +210,9 @@ func validateTasks(s *RunSpec) []string {
 		if t.Payload == nil && strings.TrimSpace(t.PayloadRef) == "" {
 			add("task %s: payload or payload_ref required", t.ID)
 		}
+		if !allowedTools[t.Tool] {
+			add("task %s: unknown or missing tool %q", t.ID, t.Tool)
+		}
 		if !allowedVerifiers[t.Verifier.Kind] {
 			add("task %s: unknown verifier %q", t.ID, t.Verifier.Kind)
 		}
@@ -253,6 +263,9 @@ func validateTasks(s *RunSpec) []string {
 	if hasExclusive && strings.TrimSpace(s.LeaseContractRef) == "" {
 		add("exclusive_side_effect tasks require lease_contract_ref (MESH-102)")
 	}
+	if s.Workload.DecisiveSwarmBenchmark && UncertainFraction(s.Tasks.Tasks) < 0.25 {
+		add("decisive_swarm_benchmark requires uncertain_fraction >= 0.25 (empty or wrong visible labels)")
+	}
 	return errs
 }
 
@@ -268,7 +281,6 @@ func validatePool(s *RunSpec) []string {
 		add("worker pool is empty")
 	}
 	seenInst := map[string]bool{}
-	phenotypes := map[string]bool{}
 	foundSingle := false
 	for _, inst := range s.Pool.Instances {
 		if inst.InstanceID == "" || inst.PhenotypeID == "" {
@@ -282,7 +294,6 @@ func validatePool(s *RunSpec) []string {
 		if len(inst.Capabilities) == 0 {
 			add("instance %s has no capabilities", inst.InstanceID)
 		}
-		phenotypes[inst.PhenotypeID] = true
 		if inst.PhenotypeID == s.SingleAgentPhenotypeID {
 			foundSingle = true
 		}
@@ -292,11 +303,5 @@ func validatePool(s *RunSpec) []string {
 	} else if !foundSingle {
 		add("single_agent_phenotype_id %q is not in the worker pool", s.SingleAgentPhenotypeID)
 	}
-	_ = phenotypes
 	return errs
-}
-
-// HasAllocationSystem reports whether sys is compared with the shared worker pool.
-func HasAllocationSystem(sys string) bool {
-	return allocationSystems[sys]
 }

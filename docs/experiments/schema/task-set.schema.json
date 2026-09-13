@@ -21,6 +21,7 @@
         "id",
         "class",
         "required_capabilities",
+        "tool",
         "arrival",
         "exclusive_side_effect",
         "timeout_ms",
@@ -41,6 +42,21 @@
         "required_capabilities": {
           "type": "array",
           "items": { "type": "string", "minLength": 1 }
+        },
+        "true_capabilities": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tool": {
+          "enum": [
+            "json.add_count",
+            "json.pick_keys",
+            "json.merge",
+            "json.sort_keys",
+            "json.unwrap_msg",
+            "json.wrap_text",
+            "text.classify"
+          ]
         },
         "arrival": {
           "oneOf": [

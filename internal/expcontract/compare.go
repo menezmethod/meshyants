@@ -80,17 +80,26 @@ func Compare(spec *RunSpec, rows []ArmRepeat) (*ComparisonReport, error) {
 			if !ok {
 				return nil, fmt.Errorf("missing result for system %s seed %d", sys, seed)
 			}
-			if sys == SystemMeshyAnts && row.ProtocolViolation != "" {
-				return &ComparisonReport{
-					ContractVersion:   Version,
-					RunID:             spec.RunID,
-					Repeats:           spec.Repeats,
-					Seeds:             append([]int(nil), spec.Seeds...),
-					AllocationVerdict: VerdictInconclusive,
-					PerMetric:         map[string]MetricDecision{},
-					Notes:             "meshyants protocol_violation; verdict is not usable",
-				}, nil
+			if sys == SystemMeshyAnts {
+				if row.ProtocolViolation != "" {
+					return inconclusive(spec, "meshyants protocol_violation; verdict is not usable"), nil
+				}
+				if v, ok := row.Metrics[MetricCoordModelCalls]; ok && v > 0 {
+					return inconclusive(spec, "meshyants coordination_model_calls>0 is a protocol violation"), nil
+				}
+				for _, m := range requiredSecondaryMetrics {
+					if _, ok := row.Metrics[m]; !ok {
+						return nil, fmt.Errorf("meshyants seed %d missing secondary metric %s", seed, m)
+					}
+				}
 			}
+			if w, ok := row.Metrics[MetricWakeups]; ok && w > float64(spec.Budget.MaxWorkerWakeups) {
+				row.BudgetExceeded = true
+			}
+			if m, ok := row.Metrics[MetricAllocMessages]; ok && m > float64(spec.Budget.MaxAllocationMessages) {
+				row.BudgetExceeded = true
+			}
+			bySysSeed[sys][seed] = row
 		}
 	}
 
@@ -192,17 +201,30 @@ func Compare(spec *RunSpec, rows []ArmRepeat) (*ComparisonReport, error) {
 
 	switch {
 	case (managerDominates || routerDominates) && worseCount >= 1:
-		// A simpler arm is tied-or-better on every primary and significantly
-		// better on at least one. All-tie is inconclusive, not falsified.
 		report.AllocationVerdict = VerdictFalsified
 	case betterCount >= 1 && worseCount == 0:
 		report.AllocationVerdict = VerdictAdvantage
 	case betterCount >= 1 && worseCount >= 1:
 		report.AllocationVerdict = VerdictMixed
+	case spec.Workload.DecisiveSwarmBenchmark && betterCount == 0:
+		// On a decisive fixture, matching the simpler arms falsifies the claim.
+		report.AllocationVerdict = VerdictFalsified
 	default:
 		report.AllocationVerdict = VerdictInconclusive
 	}
 	return report, nil
+}
+
+func inconclusive(spec *RunSpec, note string) *ComparisonReport {
+	return &ComparisonReport{
+		ContractVersion:   Version,
+		RunID:             spec.RunID,
+		Repeats:           spec.Repeats,
+		Seeds:             append([]int(nil), spec.Seeds...),
+		AllocationVerdict: VerdictInconclusive,
+		PerMetric:         map[string]MetricDecision{},
+		Notes:             note,
+	}
 }
 
 type pairResult struct {
@@ -244,10 +266,6 @@ func decidePair(mesh, other []float64, higher bool, absNoise, relNoise float64, 
 		}
 	}
 	need := int(math.Ceil(0.8 * float64(spec.Repeats)))
-	if spec.Comparison.WinRule == WinRuleBootstrapCI95 {
-		// Same information with n=3; treat as paired-sign until MESH-103 records enough repeats.
-		need = int(math.Ceil(0.8 * float64(spec.Repeats)))
-	}
 	// |diff| <= noise is a tie, including float error on the threshold.
 	const eps = 1e-9
 	switch {

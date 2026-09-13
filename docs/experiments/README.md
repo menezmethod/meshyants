@@ -8,7 +8,8 @@ This folder is the Phase 0 lock for MESH-101. It does **not** implement the harn
 |---|---|
 | `CONTRACT.md` | Normative rules: held-constant set, metrics, budget, comparison, falsification |
 | `schema/` | JSON Schema for run specs, task sets, worker pools, and run results |
-| `examples/phase-a-synthetic/` | First Phase A fixture another agent can execute without inventing rules |
+| `examples/phase-a-synthetic/` | Labeled calibration DAG (not decisive) |
+| `examples/phase-a-uncertain/` | Decisive Phase A fixture: empty or wrong visible labels |
 
 Validate a run spec:
 

@@ -93,7 +93,8 @@
         "max_output_tokens",
         "max_cost_micros",
         "max_worker_wakeups",
-        "max_exclusive_lease_attempts"
+        "max_exclusive_lease_attempts",
+        "max_allocation_messages"
       ],
       "properties": {
         "max_wall_ms": { "type": "integer", "minimum": 1 },
@@ -102,7 +103,8 @@
         "max_output_tokens": { "type": "integer", "minimum": 0 },
         "max_cost_micros": { "type": "integer", "minimum": 0 },
         "max_worker_wakeups": { "type": "integer", "minimum": 1 },
-        "max_exclusive_lease_attempts": { "type": "integer", "minimum": 0 }
+        "max_exclusive_lease_attempts": { "type": "integer", "minimum": 0 },
+        "max_allocation_messages": { "type": "integer", "minimum": 1 }
       }
     },
     "systems": {
@@ -127,7 +129,17 @@
       "items": { "type": "integer" }
     },
     "rng_algorithm": { "type": "string", "minLength": 1 },
-    "failure_injection": { "type": ["object", "null"] },
+    "failure_injection": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "none" } }
+        }
+      ]
+    },
     "metrics": {
       "type": "array",
       "minItems": 1,
@@ -156,7 +168,7 @@
       "additionalProperties": false,
       "required": ["win_rule", "noise"],
       "properties": {
-        "win_rule": { "enum": ["paired_sign_80", "bootstrap_ci_95"] },
+        "win_rule": { "enum": ["paired_sign_80"] },
         "noise": {
           "type": "object",
           "additionalProperties": false,

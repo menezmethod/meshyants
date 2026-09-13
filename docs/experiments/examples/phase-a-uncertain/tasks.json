@@ -1,10 +1,11 @@
 {
-  "id": "phase-a-synthetic-v1",
+  "id": "phase-a-uncertain-v1",
   "tasks": [
     {
       "id": "json-add-count",
-      "class": "homogeneous_dag",
-      "required_capabilities": ["json.transform"],
+      "class": "heterogeneous_uncertain",
+      "required_capabilities": [],
+      "true_capabilities": ["json.transform"],
       "tool": "json.add_count",
       "arrival": "initial",
       "exclusive_side_effect": false,
@@ -20,7 +21,7 @@
     },
     {
       "id": "json-pick-keys",
-      "class": "homogeneous_dag",
+      "class": "heterogeneous_uncertain",
       "required_capabilities": ["json.transform"],
       "tool": "json.pick_keys",
       "arrival": "initial",
@@ -37,8 +38,9 @@
     },
     {
       "id": "json-merge",
-      "class": "homogeneous_dag",
-      "required_capabilities": ["json.transform"],
+      "class": "heterogeneous_uncertain",
+      "required_capabilities": ["text.classify"],
+      "true_capabilities": ["json.transform"],
       "tool": "json.merge",
       "arrival": "initial",
       "exclusive_side_effect": false,
@@ -54,7 +56,7 @@
     },
     {
       "id": "json-sort-keys",
-      "class": "homogeneous_dag",
+      "class": "heterogeneous_uncertain",
       "required_capabilities": ["json.transform"],
       "tool": "json.sort_keys",
       "arrival": "initial",
@@ -71,8 +73,9 @@
     },
     {
       "id": "classify-infra",
-      "class": "homogeneous_dag",
-      "required_capabilities": ["text.classify"],
+      "class": "heterogeneous_uncertain",
+      "required_capabilities": [],
+      "true_capabilities": ["text.classify"],
       "tool": "text.classify",
       "arrival": "initial",
       "exclusive_side_effect": false,
@@ -88,7 +91,7 @@
     },
     {
       "id": "classify-auth",
-      "class": "homogeneous_dag",
+      "class": "heterogeneous_uncertain",
       "required_capabilities": ["text.classify"],
       "tool": "text.classify",
       "arrival": "initial",
@@ -105,8 +108,9 @@
     },
     {
       "id": "classify-billing",
-      "class": "homogeneous_dag",
-      "required_capabilities": ["text.classify"],
+      "class": "heterogeneous_uncertain",
+      "required_capabilities": ["json.transform"],
+      "true_capabilities": ["text.classify"],
       "tool": "text.classify",
       "arrival": "initial",
       "exclusive_side_effect": false,
@@ -122,7 +126,7 @@
     },
     {
       "id": "classify-other",
-      "class": "homogeneous_dag",
+      "class": "heterogeneous_uncertain",
       "required_capabilities": ["text.classify"],
       "tool": "text.classify",
       "arrival": "initial",
@@ -139,7 +143,7 @@
     },
     {
       "id": "pipeline-extract",
-      "class": "homogeneous_dag",
+      "class": "heterogeneous_uncertain",
       "required_capabilities": ["json.transform"],
       "tool": "json.unwrap_msg",
       "arrival": "initial",
@@ -156,8 +160,9 @@
     },
     {
       "id": "pipeline-classify",
-      "class": "homogeneous_dag",
-      "required_capabilities": ["text.classify"],
+      "class": "heterogeneous_uncertain",
+      "required_capabilities": [],
+      "true_capabilities": ["text.classify"],
       "tool": "text.classify",
       "arrival": { "on_success_of": "pipeline-extract" },
       "exclusive_side_effect": false,
@@ -173,7 +178,7 @@
     },
     {
       "id": "trap-json-looking-text",
-      "class": "homogeneous_dag",
+      "class": "heterogeneous_uncertain",
       "required_capabilities": ["json.transform"],
       "tool": "json.wrap_text",
       "arrival": "initial",
@@ -190,7 +195,7 @@
     },
     {
       "id": "trap-text-looking-json",
-      "class": "homogeneous_dag",
+      "class": "heterogeneous_uncertain",
       "required_capabilities": ["text.classify"],
       "tool": "text.classify",
       "arrival": "initial",
