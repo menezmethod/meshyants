@@ -1,0 +1,86 @@
+{
+  "task_id": "MESH-107",
+  "round": 2,
+  "hypothesis": "This cycle, NeuroAI supplied experiment-design constraints and rejected translations, not a new coordination primitive. The leftover empirical question is whether modular+sparse MeshyAnts beats queue/router/DAG/manager/subsumption on a heterogeneous mix.",
+  "falsification_condition": "Podcast used as evidence, or a v2 prior promoted as a NeuroAI mechanism without a leftover test.",
+  "implementation_config_sha": "a1551c7aac5af2919432285ecf8c8f7a088f79b6",
+  "benchmark_inputs": {
+    "kind": "literature_watch",
+    "sources_file": "docs/results/MESH-107/sources.json",
+    "map_file": "docs/results/MESH-107/mechanism-map.json",
+    "notes": "docs/revival/NEUROAI_WATCH.md",
+    "measurement": "verification.json Crossref-for-DOI + schema v2; live arXiv bind deferred (thrash stop)",
+    "random_seeds": []
+  },
+  "scorecard": {
+    "scientific_validity": 3,
+    "simpler_baseline_advantage": 2,
+    "performance_cost": 2,
+    "resilience_scalability": 1,
+    "code_experiment_quality": 2,
+    "total": 10,
+    "max": 25
+  },
+  "evaluator_verdicts": {
+    "scientific_skeptic": {
+      "verdict": "PASS WITH RISKS",
+      "scientific_validity": 3,
+      "strongest_objection": "C1–C4 are spec checklists; Q1 win metric and kill metric differ; claim_used quantities are not quote-bound."
+    },
+    "scheduler_critic": {
+      "verdict": "PASS WITH RISKS",
+      "simpler_baseline_advantage": 2,
+      "strongest_objection": "Residue is MAS-eval hygiene (Kim et al.) and blocking a rich-club Queen, not a NeuroAI primitive. C1/C2 do not yet bind MESH-101/103."
+    },
+    "performance_critic": {
+      "verdict": "NOT APPLICABLE",
+      "note": "No runtime claim. Watch cost is literature + Crossref."
+    },
+    "failure_critic": {
+      "verdict": "NOT APPLICABLE",
+      "note": "No leases or external effects."
+    },
+    "slop_evaluator": {
+      "verdict": "REJECT",
+      "code_experiment_quality": 2,
+      "strongest_objection": "verification.json is not produced by committed verify_sources.py (still v1 adopted[] liveness). S8a/S8b/S10a/S10b unbound."
+    }
+  },
+  "baseline_results": {
+    "outcome": "Accepted: no leftover runtime primitive vs queue/router/DAG/manager/subsumption. Watch leftover is documentary (C1 lose-regime, C4 no rich-club Queen, R1–R12).",
+    "simpler_systems": [
+      "priority queue + capability labels",
+      "central load-aware router",
+      "deterministic DAG",
+      "manager-worker",
+      "Brooks subsumption / inhibit hierarchy"
+    ]
+  },
+  "cost_latency_model_calls": {
+    "model_calls_for_coordination": 0,
+    "doi_crossref_binds_ok": 9,
+    "arxiv_live_binds": 0,
+    "arxiv_deferred": ["S8a", "S8b", "S10a", "S10b"]
+  },
+  "strongest_objection": "Measurement is unreproducible from the committed verifier. The scientific leftover is experiment-contract hygiene, not a new MeshyAnts mechanism.",
+  "previous_round_delta": {
+    "prior_round": 1,
+    "prior_total": 8,
+    "delta_total": 2,
+    "regressions": ["code_experiment_quality 3 -> 2 (stale verify_sources.py vs handwritten verification.json)"]
+  },
+  "repeated_blocker": {
+    "yes": true,
+    "what": "Claim/author binding not in a runnable verifier (round 1: URL-ok; round 2: metadata-ok / deferred arXiv)."
+  },
+  "decision": "stop",
+  "stop_condition": "STALL APPROACHING",
+  "stop_reasons": [
+    "Same material blocker (claim binding) appeared twice.",
+    "Operating guardrail: verify_sources.py already exceeded 5 back-and-forth edits and 3 failed live-arXiv fix attempts; hard stop, do not rewrite it again.",
+    "Slop evaluator REJECT on measurement completeness.",
+    "Next useful work is MESH-101/103 (other agents). Do not pad this watch."
+  ],
+  "next_action": "Do not start a third implementation round. Record the negative leftover finding. Leave C1/C2 as advice for MESH-101/103; do not edit those task entries.",
+  "target_challenge": "MESH-107 success_criteria (name a prediction) are cheaper than leftover isolation. The real test is Experiment A."
+}

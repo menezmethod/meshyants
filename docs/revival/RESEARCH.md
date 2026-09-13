@@ -16,11 +16,13 @@
 
 ## Evidence that changed the design
 
-1. **FlyWire whole-brain topology:** rich-club organization, integrator/broadcaster-like nodes, recurrence and short paths argue against a flat global swarm.
-2. **2026 brain+cord connectome:** strongest control is local feedback; long-range circuits coordinate behavior-centric modules; higher regions supervise rather than micromanage.
-3. **Princeton Cognitive Legos:** reusable cognitive components support compositional skills rather than endless handcrafted “roles.”
-4. **Princeton effort allocation:** agents should sometimes spend effort where expected information gain is high, not only where immediate success probability is highest.
-5. **Evolutionary MAS research:** selection + mutation/crossover in structured agent-configuration space makes **S** worth testing, but not trusting blindly.
+Primary citations and the mechanism → prediction map live in `docs/revival/NEUROAI_WATCH.md` (MESH-107). The bullets below are priors, not proofs. MESH-107 round 1 found no leftover coordination primitive beyond what a queue, router, DAG, manager, or subsumption stack already expresses; the watch’s residue is constraints and rejections, plus Experiment A vs those baselines.
+
+1. **FlyWire whole-brain topology** (Lin et al., Nature 2024, [10.1038/s41586-024-07968-y](https://doi.org/10.1038/s41586-024-07968-y); dataset: Dorkenwald et al., [10.1038/s41586-024-07558-y](https://doi.org/10.1038/s41586-024-07558-y)): rich-club organization, a small *arbitrarily defined* integrator/broadcaster subset, over-represented reciprocity, and short paths. This argues against a *flat global sniff*, not for a rich-club controller — the fly rich club is ~30% of neurons, and later control-theory work treats rich clubs as highways more than commanders.
+2. **2026 brain+cord connectome** (Bates, Phelps, Kim, Yang et al., Nature 2026, [10.1038/s41586-026-10735-w](https://doi.org/10.1038/s41586-026-10735-w)): strongest effector drive is local feedback; long-range AN/DN circuits coordinate behavior-centric modules; higher regions supervise rather than micromanage. The authors analogize to **subsumption / distributed robotic control**, which is a required simpler baseline, not a metaphor to copy wholesale.
+3. **Princeton compositional subspaces** (Tafazoli et al., Nature 2025, [10.1038/s41586-025-09805-2](https://doi.org/10.1038/s41586-025-09805-2); press name “Cognitive Legos”): reusable PFC components support compositional *skills* rather than endless handcrafted roles. This is within-brain geometry, not a multi-agent org chart.
+4. **Princeton effort allocation** (Masís Obando, Musslick, Cohen, PNAS 2025, [10.1073/pnas.2416720122](https://doi.org/10.1073/pnas.2416720122)): agents should sometimes spend effort where expected information gain is high, not only where immediate success probability is highest. Equal-budget MAS evidence (Kim et al., Nat. Mach. Intell. 2026, [10.1038/s42256-026-01268-y](https://doi.org/10.1038/s42256-026-01268-y)) says extra agents often *hurt* once a single capable worker exists.
+5. **Evolutionary MAS research** (EvoAgent / EvoMAS): selection + mutation/crossover in structured agent-configuration space makes **S** worth testing later, but not trusting blindly — especially when the evolutionary operator or fitness judge is an LLM.
 
 ## What must be true for MeshyAnts to matter?
 

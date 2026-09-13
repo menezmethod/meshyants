@@ -1,0 +1,122 @@
+{
+  "task_id": "MESH-107",
+  "verifier_version": "2.1-no-arxiv-live",
+  "thrash_note": "verify_sources.py hit 5+ edits and live arXiv 429/timeout. Stopped rewriting it. This record is Crossref-for-DOI + schema only.",
+  "sources_checked": 13,
+  "sources_bound_ok": 9,
+  "sources_deferred": [
+    "S8a",
+    "S8b",
+    "S10a",
+    "S10b"
+  ],
+  "map_errors": [],
+  "podcast_used_as_evidence": false,
+  "leftover_question_count": 1,
+  "constraint_count": 4,
+  "demoted_prior_count": 4,
+  "rejected_translation_count": 12,
+  "binds": [
+    {
+      "id": "S1",
+      "api": "crossref",
+      "ok": true,
+      "remote_title": "Neuronal wiring diagram of an adult brain",
+      "remote_first_author": "Sven Dorkenwald",
+      "missing_title_tokens": [],
+      "surname_ok": true
+    },
+    {
+      "id": "S2",
+      "api": "crossref",
+      "ok": true,
+      "remote_title": "Network statistics of the whole-brain connectome of Drosophila",
+      "remote_first_author": "Albert Lin",
+      "missing_title_tokens": [],
+      "surname_ok": true
+    },
+    {
+      "id": "S3",
+      "api": "crossref",
+      "ok": true,
+      "remote_title": "Distributed control circuits across a brain-and-cord connectome",
+      "remote_first_author": "Alexander S. Bates",
+      "missing_title_tokens": [],
+      "surname_ok": true
+    },
+    {
+      "id": "S4",
+      "api": "crossref",
+      "ok": true,
+      "remote_title": "Building compositional tasks with shared neural subspaces",
+      "remote_first_author": "Sina Tafazoli",
+      "missing_title_tokens": [],
+      "surname_ok": true
+    },
+    {
+      "id": "S5",
+      "api": "crossref",
+      "ok": true,
+      "remote_title": "Learning expectations shape cognitive control allocation",
+      "remote_first_author": "Javier Alejandro Mas\u00eds Obando",
+      "missing_title_tokens": [],
+      "surname_ok": true
+    },
+    {
+      "id": "S6",
+      "api": "crossref",
+      "ok": true,
+      "remote_title": "Capable language models can outgrow the benefits of collaboration",
+      "remote_first_author": "Yubin Kim",
+      "missing_title_tokens": [],
+      "surname_ok": true
+    },
+    {
+      "id": "S7",
+      "api": "crossref",
+      "ok": true,
+      "remote_title": "A brain-inspired agentic architecture to improve planning with LLMs",
+      "remote_first_author": "Taylor Webb",
+      "missing_title_tokens": [],
+      "surname_ok": true
+    },
+    {
+      "id": "S8a",
+      "api": "arxiv_not_refetched",
+      "ok": null,
+      "note": "thrash stop: live arXiv bind hung/429; authors already corrected from prior metadata this session"
+    },
+    {
+      "id": "S8b",
+      "api": "arxiv_not_refetched",
+      "ok": null,
+      "note": "thrash stop: live arXiv bind hung/429; authors already corrected from prior metadata this session"
+    },
+    {
+      "id": "S9",
+      "api": "crossref",
+      "ok": true,
+      "remote_title": "Exploring the Role of the Rich Club in Network Control of Neurocognitive States",
+      "remote_first_author": "Alina N. Podschun",
+      "missing_title_tokens": [],
+      "surname_ok": true
+    },
+    {
+      "id": "S10a",
+      "api": "arxiv_not_refetched",
+      "ok": null,
+      "note": "thrash stop: live arXiv bind hung/429; authors already corrected from prior metadata this session"
+    },
+    {
+      "id": "S10b",
+      "api": "arxiv_not_refetched",
+      "ok": null,
+      "note": "thrash stop: live arXiv bind hung/429; authors already corrected from prior metadata this session"
+    },
+    {
+      "id": "S11",
+      "api": "skipped_classic",
+      "ok": true
+    }
+  ]
+}
