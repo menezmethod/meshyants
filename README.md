@@ -34,3 +34,7 @@ Start with:
 - `docs/revival/EXPERIMENTS.md`
 - `docs/revival/ROADMAP.md`
 - `docs/revival/MENTAT.md`
+## Agent research/build loop
+
+Agents should start at `docs/tasks/README.md` and use `docs/tasks/LOOP_PROMPT.md`. The task system requires baseline comparisons, skeptical evaluators, performance evidence, and permits negative results/rejected approaches.
+
