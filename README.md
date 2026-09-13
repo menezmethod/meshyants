@@ -1,26 +1,36 @@
-# MeshyAnts v1 (Go)
+# MeshyAnts
 
-Reference implementation aligned with `docs/v1/`.
+**Experimental substrate for collective machine intelligence.**
 
-## Prerequisites
+MeshyAnts asks one falsifiable question:
 
-- Go 1.23+
-- `protoc` and `protoc-gen-go` for regenerating protobufs (`make generate`)
+> Given the same models, tools, tasks, and budget, can decentralized biologically inspired coordination outperform conventional agent orchestration on quality, cost, resilience, or adaptation?
 
-## Commands
+The existing Go v1 already contains useful substrate: signed `TaskAtom`s, `CapabilityAdvertisement`s, `PheromoneRecord`s with decay, `ReputationEvent`s, trust domains, a ledger, Oracle/Queen components, routing, failure handling, and NATS-oriented runtime pieces.
 
-```bash
-make generate   # regenerate gen/meshyantsv1 from meshyants/v1/contracts.proto
-go test -short -race ./...
-go test -tags=integration -race ./...   # Docker (NATS)
-go test -tags=e2e -race ./test/e2e/... # Docker, full blackboard round-trip
-```
+## Research model
 
-Binaries:
+`CI = f(U, T, F, M, L, E, C, S, t)`
 
-- `go run ./cmd/meshyants/ version|doctor|serve`
-- `go run ./cmd/queen/` — emits `QUEEN_*` keys and signed `JoinGrant` / `ProvisioningManifest` JSON (dev only).
+- **U — Units:** agents/tools + capabilities
+- **T — Topology:** who can influence whom
+- **F — Feedback:** verification, reward, inhibition
+- **M — Memory:** working → evolutionary
+- **L — Learning:** thresholds, reputation, bandits, adaptation
+- **E — Environment:** tools, code, APIs, users, real outcomes
+- **C — Competition/cooperation:** claim work vs share results
+- **S — Selection pressure:** what survives, gets resources, replicates, or disappears
+- **t — Time:** decay, leases, drift, slow structural adaptation
 
-## Audit test IDs
+Two cross-cutting constraints: **homeostasis** (prevent runaway activation/cost) and **integration** (turn local work into useful global behavior).
 
-Failure-oriented audit cases from `docs/v1/10-failure-oriented-design-audit.md` are referenced in test names (e.g. `U4`, `I1`, `C8`) and `*_audit_test.go` files.
+## Current status
+
+This is a research project, not a claim that brains and AI agents are equivalent. v2 should first test coordination mechanisms against strong simpler baselines.
+
+Start with:
+- `docs/revival/RESEARCH.md`
+- `docs/revival/ARCHITECTURE.md`
+- `docs/revival/EXPERIMENTS.md`
+- `docs/revival/ROADMAP.md`
+- `docs/revival/MENTAT.md`
