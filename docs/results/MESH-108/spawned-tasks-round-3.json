@@ -1,0 +1,52 @@
+[
+  {
+    "suggested_id": "MESH-108-F1",
+    "title": "Reject path-decorated aesthetic-only evidence or narrow the rubber-stamp claim",
+    "workstream": "quality",
+    "type": "experiment",
+    "hypothesis": "A fluent stamp whose only evidence is a repo path plus elegance language still Advances.",
+    "falsification_condition": "Validate rejects path-plus-aesthetic-only evidence, or the claim is narrowed to the operational class already tested.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Path-bearing aesthetic evidence still counts as a concrete anchor"
+  },
+  {
+    "suggested_id": "MESH-108-F2",
+    "title": "Prove draft uptake or align success criterion 3 with spawn-only",
+    "workstream": "quality",
+    "type": "research",
+    "hypothesis": "Reject/risk drafts are reviewed within one loop; otherwise create tasks instead of being buried is unmet.",
+    "falsification_condition": "Success criteria are rewritten to drafts written, not queued, or a later loop leaves drafts with no disposition.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Negatives become result-dir drafts, not shared-queue tasks"
+  },
+  {
+    "suggested_id": "MESH-108-F3",
+    "title": "Keep evalgate as a non-advantage implementation or replace it with schema+jq",
+    "workstream": "quality",
+    "type": "research",
+    "hypothesis": "MESH-108 success criteria stay met if Validate/Spawn/CheckTasks are expressed only in schema plus a CI jq/shell hook.",
+    "falsification_condition": "A later round scores simpler_baseline_advantage \u003e= 3 or claims the Go package beats JSON Schema.",
+    "source_task_id": "MESH-108",
+    "source_finding": "schema+jq still ties the existence claim; the Go package is an extra encoding"
+  },
+  {
+    "suggested_id": "MESH-108-F4",
+    "title": "Treat '.' as an unsafe task id and test path-escape IDs",
+    "workstream": "quality",
+    "type": "implementation",
+    "hypothesis": "Rejecting '.' and testing ../x, foo/bar, and '.' will close the residual path-join hole.",
+    "falsification_condition": "CheckTasks still treats id='.' as safe, or ../x is not blocked.",
+    "source_task_id": "MESH-108",
+    "source_finding": "safeTaskID allows '.' and has no committed escape-id table test"
+  },
+  {
+    "suggested_id": "MESH-108-F5",
+    "title": "Reject slash-gamed aesthetic evidence",
+    "workstream": "quality",
+    "type": "implementation",
+    "hypothesis": "Requiring a path-shaped token will reject looks good / ship it while still accepting internal/evalgate/gate.go and 200ms.",
+    "falsification_condition": "looks good / ship it still passes Validate, or evidence naming internal/evalgate/gate.go is rejected.",
+    "source_task_id": "MESH-108",
+    "source_finding": "Any slash still rubber-stamps aesthetic evidence"
+  }
+]

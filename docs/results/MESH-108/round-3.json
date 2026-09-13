@@ -1,0 +1,53 @@
+{
+  "task_id": "MESH-108",
+  "round": 3,
+  "hypothesis": "A machine-checked evaluator report can reject work, require a strongest simpler explanation, and turn negatives into task drafts. It does not replace independent scientific judgment; it blocks rubber stamps, buried negatives, and done-without-evidence.",
+  "falsification_condition": "A rubber-stamp or token-gamed report Advances; status=done without a matching advancing eval-report.json passes check-tasks; reject/risk findings produce no task draft.",
+  "implementation_config_sha": "204f6d8",
+  "benchmark_inputs": {
+    "fixtures": [
+      "internal/evalgate/testdata/valid_pass.json",
+      "internal/evalgate/testdata/valid_reject.json",
+      "internal/evalgate/testdata/rubber_stamp.json",
+      "internal/evalgate/testdata/fluent_stamp.json"
+    ],
+    "baseline": "schema-only required-field presence; pattern-tightened schema acknowledged as a tie for the existence claim"
+  },
+  "random_seeds": [],
+  "scorecard": {
+    "scientific_validity": 3,
+    "simpler_baseline_advantage": 2,
+    "performance_cost": 4,
+    "resilience_scalability": 3,
+    "code_experiment_quality": 3,
+    "total": 15
+  },
+  "evaluator_verdicts": {
+    "scientific_skeptic": "PASS WITH RISKS",
+    "scheduler_critic": "PASS WITH RISKS",
+    "performance_critic": "PASS",
+    "failure_critic": "PASS WITH RISKS",
+    "slop_evaluator": "PASS WITH RISKS"
+  },
+  "composite_verdict": "PASS WITH RISKS",
+  "baseline_results": "Field-presence schema accepts testdata/rubber_stamp.json and testdata/fluent_stamp.json; evalgate rejects both. Scheduler outcome remains checklist_or_schema ties; advantage score held at 2. Named token games (MESH-108 is elegant, looks good 5, elegant.go) are rejected. Mismatched task_id and oversized tasks.json are blocked.",
+  "cost_latency_model_calls": "go test -race ./internal/evalgate/ 1.020s; LoadReport near-max 391µs; oversize 4.5µs; 0 in-gate model calls.",
+  "strongest_objection": "hasConcreteAnchor is still a lexical proxy (any slash or testdata token can decorate aesthetic prose). schema+jq can encode the same existence claim. Drafts are not inserted into the shared tasks.json queue.",
+  "previous_round_delta": {
+    "total": 3,
+    "from": 12,
+    "to": 15,
+    "regressions": [],
+    "closed_findings": [
+      "named token-gamed evidence rejected",
+      "all-not_applicable cannot PASS",
+      "CheckTasks binds report.task_id",
+      "CheckTasks read is bounded",
+      "hypothesis no longer claims independent judgment or a Go-vs-schema win"
+    ]
+  },
+  "next_action": "Stop. Residual risks spawned to docs/results/MESH-108/spawned-tasks-round-3.json. Do not run a fourth vacuity-heuristic pass (thrash hard-stop: three attempts already).",
+  "loop_decision": "SUCCESS",
+  "convergence": "SUCCESS on the revised operational claim after 3 rounds. Original independent-judgment overclaim was revised away. Schema-ties is accepted, not a claimed win. PASS WITH RISKS is the composite evaluator verdict.",
+  "eval_report": "docs/results/MESH-108/eval-report.json"
+}
