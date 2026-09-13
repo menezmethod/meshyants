@@ -1,1 +1,325 @@
-{"tasks":[{"id":"MESH-001","title":"Define MCP tool specs for agent mesh","description":"Document the MCP tools exposed by the mesh — what each agent offers. Blocks menezmethod.com T002.","priority":1,"status":"backlog"},{"id":"MESH-002","title":"Publish MCP SDK integration package","description":"Package up the MCP client bindings so consuming apps (hermes-ceo-mac, menezmethod.com) can import them.","priority":1,"status":"backlog"},{"id":"MESH-003","title":"Agent discovery protocol","description":"How agents discover each other's capabilities on the mesh.","priority":1,"status":"backlog"},{"id":"MESH-004","title":"Execution protocol hardening","description":"Finalize and document the execution protocol between agents per docs/v1/03-protocols-and-execution.md.","priority":1,"status":"backlog"},{"id":"MESH-005","title":"Security & consensus audit","description":"Implement the security model from docs/v1/04-security-resilience-and-consensus.md as runnable code.","priority":2,"status":"backlog"},{"id":"MESH-006","title":"Test suite for multi-agent execution","description":"Integration tests for agent-to-agent execution flows.","priority":2,"status":"backlog"},{"id":"MESH-007","title":"Operations and rollouts playbook","description":"Operational docs for running the mesh per docs/v1/05-operations-testing-and-rollouts.md.","priority":2,"status":"backlog"},{"id":"MESH-008","title":"Frigate integration via PicoClaw","description":"Wire camera event streams through the mesh.","priority":2,"status":"backlog"},{"id":"MESH-009","title":"OpenClaw + Hermes audit report","description":"Complete audit per docs/v1/06-audit-openclaw-hermes-picoclaw.md.","priority":3,"status":"backlog"},{"id":"MESH-010","title":"Failure-oriented design audit","description":"Complete failure mode analysis per docs/v1/10-failure-oriented-design-audit.md.","priority":3,"status":"backlog"}]}
+{
+  "version": 2,
+  "purpose": "Research-first build queue for MeshyAnts. Every implementation task must produce evidence, survive critique, and compare against a simpler baseline.",
+  "statuses": [
+    "backlog",
+    "ready",
+    "in_progress",
+    "blocked",
+    "done",
+    "rejected"
+  ],
+  "global_done_gate": [
+    "tests/evals pass",
+    "baseline comparison exists",
+    "skeptic review completed",
+    "performance/cost measured when relevant",
+    "result and limitations documented"
+  ],
+  "tasks": [
+    {
+      "id": "MESH-101",
+      "title": "Lock the V2 experiment contract",
+      "workstream": "science",
+      "type": "research",
+      "priority": 1,
+      "status": "ready",
+      "depends_on": [],
+      "hypothesis": "A small, explicit experiment contract will prevent MeshyAnts from becoming an unfalsifiable agent framework.",
+      "deliverables": [
+        "benchmark task schema",
+        "metric definitions",
+        "budget rules",
+        "falsification criteria"
+      ],
+      "success_criteria": [
+        "single-agent, manager-worker, central-router and MeshyAnts runs can be compared under the same budget",
+        "another agent can run the benchmark without inventing rules"
+      ],
+      "evidence_required": [
+        "example benchmark run spec",
+        "critic sign-off"
+      ]
+    },
+    {
+      "id": "MESH-102",
+      "title": "Define worker phenotype and lifecycle",
+      "workstream": "foundation",
+      "type": "design",
+      "priority": 1,
+      "status": "ready",
+      "depends_on": [
+        "MESH-101"
+      ],
+      "hypothesis": "Versioned worker phenotypes plus explicit task/lease/checkpoint states are enough to support reproducible experiments without adding a heavy orchestrator.",
+      "deliverables": [
+        "phenotype schema",
+        "task lifecycle",
+        "lease/fencing rules",
+        "checkpoint semantics"
+      ],
+      "success_criteria": [
+        "worker identity is reproducible",
+        "stale workers cannot overwrite current work",
+        "deterministic tools and LLM workers fit the same abstraction"
+      ],
+      "evidence_required": [
+        "state-machine tests",
+        "failure cases"
+      ]
+    },
+    {
+      "id": "MESH-103",
+      "title": "Build baseline benchmark harness",
+      "workstream": "science",
+      "type": "implementation",
+      "priority": 1,
+      "status": "backlog",
+      "depends_on": [
+        "MESH-101",
+        "MESH-102"
+      ],
+      "hypothesis": "MeshyAnts is only meaningful if it can beat or complement strong simpler baselines.",
+      "deliverables": [
+        "single-worker baseline",
+        "manager-worker baseline",
+        "central capability-router baseline",
+        "shared metrics output"
+      ],
+      "success_criteria": [
+        "same tasks/models/tools/budget can run through every baseline",
+        "results are machine-readable"
+      ],
+      "evidence_required": [
+        "repeatable benchmark results",
+        "variance across repeated runs"
+      ]
+    },
+    {
+      "id": "MESH-104",
+      "title": "Implement minimum Meshy allocation experiment",
+      "workstream": "science",
+      "type": "implementation",
+      "priority": 1,
+      "status": "backlog",
+      "depends_on": [
+        "MESH-103"
+      ],
+      "hypothesis": "Local eligibility + thresholds + contextual reputation + stochastic claiming can outperform central routing in some heterogeneous workloads.",
+      "deliverables": [
+        "local claim logic",
+        "contextual reputation",
+        "exploration policy",
+        "inhibition/saturation signal"
+      ],
+      "success_criteria": [
+        "no LLM is used for task claiming",
+        "routing decisions are replayable",
+        "at least one benchmark regime tests the hypothesis"
+      ],
+      "evidence_required": [
+        "comparison against MESH-103 baselines",
+        "failure/negative result accepted"
+      ]
+    },
+    {
+      "id": "MESH-105",
+      "title": "Topology experiments",
+      "workstream": "neuroai",
+      "type": "experiment",
+      "priority": 2,
+      "status": "backlog",
+      "depends_on": [
+        "MESH-104"
+      ],
+      "hypothesis": "Modular local neighborhoods with sparse integration and recurrence can outperform a flat global field on quality or coordination cost.",
+      "deliverables": [
+        "flat topology",
+        "modular topology",
+        "integrator/broadcaster topology",
+        "recurrent verifier loop"
+      ],
+      "success_criteria": [
+        "same worker set can run under multiple topologies",
+        "topology is a configuration, not hard-coded business logic"
+      ],
+      "evidence_required": [
+        "quality/cost/latency curves",
+        "emergence delta",
+        "skeptic review"
+      ]
+    },
+    {
+      "id": "MESH-106",
+      "title": "Performance and scalability torture suite",
+      "workstream": "systems",
+      "type": "experiment",
+      "priority": 2,
+      "status": "backlog",
+      "depends_on": [
+        "MESH-103"
+      ],
+      "hypothesis": "Locality, cheap event-driven coordination and bounded wakeups can scale without global sniffing or runaway compute.",
+      "deliverables": [
+        "load generator",
+        "wake-up accounting",
+        "event amplification metrics",
+        "failure injection",
+        "resource profiles"
+      ],
+      "success_criteria": [
+        "measure 1/10/100/1000 worker simulations where practical",
+        "identify scaling knee",
+        "prove or falsify that coordination overhead stays bounded enough to matter"
+      ],
+      "evidence_required": [
+        "profiles",
+        "cost curves",
+        "hot-path findings"
+      ]
+    },
+    {
+      "id": "MESH-107",
+      "title": "NeuroAI research watch and translation loop",
+      "workstream": "neuroai",
+      "type": "research_loop",
+      "priority": 2,
+      "status": "ready",
+      "depends_on": [],
+      "cadence": "run when the project reaches a design fork, after a major experiment, or when notable NeuroAI/connectomics work appears; do not churn weekly for no reason",
+      "hypothesis": "NeuroAI can supply testable mechanisms, but biological analogy should only enter MeshyAnts when converted into a falsifiable software experiment.",
+      "sources": [
+        "FlyWire/connectomics",
+        "Princeton Natural & Artificial Minds / Princeton Neuroscience Institute",
+        "Brain Inspired interviews/transcripts",
+        "Neuromatch",
+        "Allen Institute",
+        "Santa Fe Institute when relevant"
+      ],
+      "deliverables": [
+        "research notes with primary-source links",
+        "mechanism → software hypothesis mapping",
+        "what-not-to-copy section"
+      ],
+      "success_criteria": [
+        "each adopted idea names a measurable prediction",
+        "podcasts/transcripts are treated as leads, not evidence when a paper/source exists"
+      ],
+      "evidence_required": [
+        "primary sources",
+        "contradictory evidence search"
+      ]
+    },
+    {
+      "id": "MESH-108",
+      "title": "Skeptic and evaluator gauntlet",
+      "workstream": "quality",
+      "type": "continuous_gate",
+      "priority": 1,
+      "status": "ready",
+      "depends_on": [],
+      "hypothesis": "Independent adversarial evaluation will prevent us from mistaking complexity, benchmark leakage, or attractive demos for progress.",
+      "deliverables": [
+        "scientific skeptic",
+        "scheduler/simple-system critic",
+        "performance critic",
+        "security/failure critic",
+        "slop/code-quality evaluator"
+      ],
+      "success_criteria": [
+        "evaluators can reject work",
+        "critic must propose the strongest simpler explanation",
+        "negative findings create tasks instead of being buried"
+      ],
+      "evidence_required": [
+        "evaluation reports attached to material changes"
+      ]
+    },
+    {
+      "id": "MESH-109",
+      "title": "Community and ant ecosystem design",
+      "workstream": "community",
+      "type": "design",
+      "priority": 3,
+      "status": "backlog",
+      "depends_on": [
+        "MESH-102",
+        "MESH-104"
+      ],
+      "hypothesis": "A portable worker/skill manifest and reproducible eval history could let outsiders contribute useful ants without turning the project into an unsafe plugin marketplace.",
+      "deliverables": [
+        "ant manifest draft",
+        "contribution path",
+        "capability permissions",
+        "signed provenance concept",
+        "community experiment proposal"
+      ],
+      "success_criteria": [
+        "a third party can define an ant without changing core code",
+        "performance claims require reproducible evidence",
+        "marketplace is optional, not assumed"
+      ],
+      "evidence_required": [
+        "threat model",
+        "sample community ant",
+        "maintainer burden estimate"
+      ]
+    },
+    {
+      "id": "MESH-110",
+      "title": "WOW outcome: self-discovered useful workflow",
+      "workstream": "north_star",
+      "type": "demo_experiment",
+      "priority": 2,
+      "status": "backlog",
+      "depends_on": [
+        "MESH-104",
+        "MESH-105",
+        "MESH-108"
+      ],
+      "hypothesis": "The strongest demo is not 'many agents ran'; it is that MeshyAnts discovers or adapts a workflow that a fixed orchestrator was not explicitly given, and does so with measurable value.",
+      "target": [
+        "new useful task/path emerges from local signals",
+        "workflow survives a worker failure or workload shift",
+        "beats a credible baseline on at least one meaningful axis: quality, cost, latency, adaptation or resilience"
+      ],
+      "success_criteria": [
+        "result is reproducible",
+        "baseline is public",
+        "failure cases are shown",
+        "demo explains why topology/feedback/learning mattered"
+      ],
+      "evidence_required": [
+        "recorded run",
+        "benchmark data",
+        "ablation removing the claimed mechanism"
+      ]
+    },
+    {
+      "id": "MESH-111",
+      "title": "Publishable findings and community loop",
+      "workstream": "community",
+      "type": "research",
+      "priority": 3,
+      "status": "backlog",
+      "depends_on": [
+        "MESH-110"
+      ],
+      "hypothesis": "Open negative and positive results are more valuable than marketing a generic harness.",
+      "deliverables": [
+        "experiment reports",
+        "reproducible configs",
+        "public benchmark dataset where licensing permits",
+        "good-first-experiment issues"
+      ],
+      "success_criteria": [
+        "outsider can reproduce at least one key result",
+        "claims clearly distinguish observation from speculation"
+      ],
+      "evidence_required": [
+        "reproduction instructions",
+        "limitations"
+      ]
+    }
+  ]
+}
