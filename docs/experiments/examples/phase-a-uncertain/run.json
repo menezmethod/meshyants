@@ -2,8 +2,8 @@
   "contract_version": 1,
   "run_id": "phase-a-uncertain-v1",
   "phase": "A",
-  "hypothesis": "On a skill mix whose visible labels are empty or wrong for at least 25% of tasks, MeshyAnts outcome-aware allocation can beat a locked static capability router on success or quality under the same budget.",
-  "falsification": "If manager_worker or central_router is tied-or-better on every primary metric (including an all-tie) across 3 seeds, Phase A allocation advantage is falsified for this fixture.",
+  "hypothesis": "On a skill mix whose visible labels are empty or wrong for at least 25% of tasks, MeshyAnts can beat AssignStaticRetry on a primary metric under the same budget. Retry-only success/quality ties are expected and count as falsified.",
+  "falsification": "If manager_worker or central_router using AssignStaticRetry is tied-or-better on every primary metric (including an all-tie) across 3 seeds, Phase A allocation advantage is falsified for this fixture.",
   "workload": {
     "id": "phase-a-uncertain-v1",
     "class": "heterogeneous_uncertain",
@@ -14,7 +14,15 @@
   "single_agent_phenotype_id": "generalist",
   "single_agent_selection_rule": "named",
   "single_agent_justification": "generalist is the only phenotype that implements both json.transform and text.classify, so it is the strongest solo worker on this fixture.",
-  "tools": ["json.transform", "text.classify"],
+  "tools": [
+    "json.add_count",
+    "json.pick_keys",
+    "json.merge",
+    "json.sort_keys",
+    "json.unwrap_msg",
+    "json.wrap_text",
+    "text.classify"
+  ],
   "models": [],
   "budget": {
     "max_wall_ms": 60000,

@@ -30,9 +30,11 @@ func Load(path string) (*RunSpec, error) {
 	spec.Pool = pool
 	spec.baseDir = base
 	if spec.LeaseContractRef != "" {
-		if _, err := os.Stat(filepath.Join(base, spec.LeaseContractRef)); err != nil {
-			return nil, fmt.Errorf("lease_contract_ref %q: %w", spec.LeaseContractRef, err)
+		lease, err := loadLease(filepath.Join(base, spec.LeaseContractRef))
+		if err != nil {
+			return nil, err
 		}
+		spec.Lease = lease
 	}
 	if err := spec.Validate(); err != nil {
 		return nil, err
@@ -50,6 +52,21 @@ func loadTaskSet(path string) (*TaskSet, error) {
 		return nil, fmt.Errorf("parse task set %s: %w", path, err)
 	}
 	return &set, nil
+}
+
+func loadLease(path string) (*LeaseContract, error) {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("read lease_contract_ref %s: %w", path, err)
+	}
+	var lease LeaseContract
+	if err := json.Unmarshal(raw, &lease); err != nil {
+		return nil, fmt.Errorf("parse lease_contract_ref %s: %w", path, err)
+	}
+	if lease.Kind != "exclusive_fence" || lease.Fencing != "token" || !lease.ExactlyOnce {
+		return nil, fmt.Errorf("lease_contract_ref %s: want kind=exclusive_fence fencing=token exactly_once=true", path)
+	}
+	return &lease, nil
 }
 
 func loadPool(path string) (*WorkerPool, error) {

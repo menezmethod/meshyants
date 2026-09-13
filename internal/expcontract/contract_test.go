@@ -297,6 +297,45 @@ func TestAssignStaticPrefersSpecialist(t *testing.T) {
 	require.Equal(t, "json-a", got.InstanceID)
 }
 
+func TestSimulateStaticRetrySolvesBothFixtures(t *testing.T) {
+	t.Parallel()
+	synth := loadClone(t)
+	sRate, sQual, _ := expcontract.SimulateStaticRetry(synth)
+	require.Equal(t, 1.0, sRate)
+	require.Equal(t, 1.0, sQual)
+
+	_, file, _, ok := runtime.Caller(0)
+	require.True(t, ok)
+	path := filepath.Join(filepath.Dir(file), "..", "..", "docs", "experiments", "examples", "phase-a-uncertain", "run.json")
+	unc, err := expcontract.Load(path)
+	require.NoError(t, err)
+	uRate, uQual, atts := expcontract.SimulateStaticRetry(unc)
+	require.Equal(t, 1.0, uRate)
+	require.Equal(t, 1.0, uQual)
+	require.Greater(t, expcontract.MakespanMS(atts), 0)
+}
+
+func TestVerifyMatchesExecute(t *testing.T) {
+	t.Parallel()
+	spec := loadClone(t)
+	generalist := spec.Pool.Instances[4]
+	for _, task := range spec.Tasks.Tasks {
+		out, ok := expcontract.Execute(task, generalist)
+		require.True(t, ok, task.ID)
+		passed, q, err := expcontract.Verify(task, out)
+		require.NoError(t, err, task.ID)
+		require.True(t, passed, task.ID)
+		require.Equal(t, 1.0, q, task.ID)
+	}
+}
+
+func TestRejectsCapabilityNamesAsTools(t *testing.T) {
+	t.Parallel()
+	spec := loadClone(t)
+	spec.Tools = []string{"json.transform"}
+	require.Error(t, spec.Validate())
+}
+
 func TestAssignStaticFollowsWrongVisibleLabel(t *testing.T) {
 	t.Parallel()
 	_, file, _, ok := runtime.Caller(0)

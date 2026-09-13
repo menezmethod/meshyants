@@ -157,9 +157,17 @@ type RunSpec struct {
 	Comparison                    Comparison        `json:"comparison"`
 	AllowMeshyantsCoordinationLLM bool              `json:"allow_meshyants_coordination_llm,omitempty"`
 
-	Tasks   *TaskSet    `json:"-"`
-	Pool    *WorkerPool `json:"-"`
-	baseDir string      `json:"-"`
+	Tasks   *TaskSet       `json:"-"`
+	Pool    *WorkerPool    `json:"-"`
+	Lease   *LeaseContract `json:"-"`
+	baseDir string         `json:"-"`
+}
+
+// LeaseContract is the only valid exclusive-effect fence document in v1.
+type LeaseContract struct {
+	Kind        string `json:"kind"`
+	Fencing     string `json:"fencing"`
+	ExactlyOnce bool   `json:"exactly_once"`
 }
 
 // FailureInjection is closed. Contract v1 allows only null or {kind: none}.

@@ -87,6 +87,14 @@ func (s *RunSpec) Validate() error {
 	if s.AllowMeshyantsCoordinationLLM {
 		add("meshyants coordination LLM is a protocol violation (allow_meshyants_coordination_llm must be false)")
 	}
+	if len(s.Tools) == 0 {
+		add("tools must list the closed Execute kinds used by the task set")
+	}
+	for _, tool := range s.Tools {
+		if !allowedTools[tool] {
+			add("tools entry %q is not a locked Execute kind", tool)
+		}
+	}
 
 	if s.Budget.MaxWallMS < 1 {
 		add("budget.max_wall_ms must be >= 1")
@@ -212,6 +220,8 @@ func validateTasks(s *RunSpec) []string {
 		}
 		if !allowedTools[t.Tool] {
 			add("task %s: unknown or missing tool %q", t.ID, t.Tool)
+		} else if !contains(s.Tools, t.Tool) {
+			add("task %s: tool %q is not listed in run spec tools", t.ID, t.Tool)
 		}
 		if !allowedVerifiers[t.Verifier.Kind] {
 			add("task %s: unknown verifier %q", t.ID, t.Verifier.Kind)
@@ -304,4 +314,13 @@ func validatePool(s *RunSpec) []string {
 		add("single_agent_phenotype_id %q is not in the worker pool", s.SingleAgentPhenotypeID)
 	}
 	return errs
+}
+
+func contains(xs []string, v string) bool {
+	for _, x := range xs {
+		if x == v {
+			return true
+		}
+	}
+	return false
 }

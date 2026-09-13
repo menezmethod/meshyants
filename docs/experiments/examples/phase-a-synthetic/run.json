@@ -14,7 +14,15 @@
   "single_agent_phenotype_id": "generalist",
   "single_agent_selection_rule": "named",
   "single_agent_justification": "generalist is the only phenotype that implements both json.transform and text.classify, so it is the strongest solo worker on this fixture.",
-  "tools": ["json.transform", "text.classify"],
+  "tools": [
+    "json.add_count",
+    "json.pick_keys",
+    "json.merge",
+    "json.sort_keys",
+    "json.unwrap_msg",
+    "json.wrap_text",
+    "text.classify"
+  ],
   "models": [],
   "budget": {
     "max_wall_ms": 60000,

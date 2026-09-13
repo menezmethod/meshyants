@@ -42,9 +42,9 @@ A Phase A run spec MUST include these four arms:
 | ID | Meaning | Worker materialization |
 |---|---|---|
 | `single_agent` | One worker, no manager, no router, no field | Exactly one instance of `single_agent_phenotype_id` |
-| `manager_worker` | Central queue + **AssignStatic** (below) | Full `worker_pool` |
-| `central_router` | Same **AssignStatic** math; different control locus (push vs match) | Full `worker_pool` |
-| `meshyants` | May use outcomes. Must not read `true_capabilities`. MESH-104 implements it. | Full `worker_pool` |
+| `manager_worker` | Central queue + **AssignStaticRetry** | Full `worker_pool` |
+| `central_router` | Same **AssignStaticRetry** math; different control locus only | Full `worker_pool` |
+| `meshyants` | May use outcomes beyond retry. Must not read `true_capabilities`. | Full `worker_pool` |
 
 Optional fifth arm: `flat_blackboard` (volunteer claims, no reputation/inhibition). Allowed because EXPERIMENTS.md lists it. Not required to lock MESH-101.
 
@@ -227,7 +227,7 @@ Reuse, do not re-encode:
 - Workers advertise with `CapabilityAdvertisement`
 - Outcomes travel as `PheromoneRecord` (`TODO`, `INSIGHT`, `DANGER`, `SAFE`) with decay
 - `ReputationEvent` is allowed as a slow signal; it is not a Phase A requirement
-- Existing `routing.Router` is **not** the Phase A baseline. Phase A `central_router` and `manager_worker` MUST call `AssignStatic` in `internal/expcontract`. v1 `routing.Router` may be used only if it implements that policy on the same visible labels.
+- Existing `routing.Router` is **not** the Phase A baseline. Phase A `central_router` and `manager_worker` MUST call `AssignStaticRetry` / `RunStaticRetry`. v1 `routing.Router` may be used only if it implements that policy on the same visible labels.
 
 `requirements_json` on a `TaskAtom` SHOULD carry visible `required_capabilities` only, never `true_capabilities`.
 
@@ -255,26 +255,29 @@ A capable worker MUST implement these exact functions (`internal/expcontract.Exe
 
 These fixtures use `binary_from_verifier`, so `quality == task_success_rate`. That is honest, not a second signal. Do not invent a quality rubric.
 
-## AssignStatic (locked baselines)
+## AssignStaticRetry (locked baselines)
 
-`manager_worker` and `central_router` use the same function (`internal/expcontract.AssignStatic`):
+`manager_worker` and `central_router` share `internal/expcontract.AssignStaticRetry` / `RunStaticRetry`. They are not a no-retry strawman.
 
-1. Consider only **idle** workers that are `VisibleEligible` (advertised caps ⊇ visible `required_capabilities`, or any idle worker if visible labels are empty).
-2. Pick fewest capabilities (most specific), then lowest `simulate_exec_ms`, then `instance_id`.
-3. If none eligible, the task stays queued. Do not assign a known-ineligible worker.
-4. Do **not** change assignment after a failed attempt.
+1. Among idle `VisibleEligible` workers, minus instance IDs that already failed this task: fewest capabilities, then lowest `simulate_exec_ms`, then `instance_id`.
+2. On `capability_mismatch` or verify fail, exclude that instance and pick again, up to `max_attempts`.
+3. If none eligible, the task stays queued. Do not assign a worker that is visibly ineligible.
+4. `SimulateStaticRetry` is the locked success/quality those arms must reproduce on these fixtures. `MakespanMS` is the locked `wall_time_ms` clock (per-worker busy time, not process wall clock).
+5. `AssignStatic` without exclude is only an ablation, not a required arm.
 
-`meshyants` may use completed-task outcomes and advertised capabilities. It MUST NOT read `true_capabilities`. It MAY reassign after failure (that is the independent variable).
+`meshyants` MUST NOT read `true_capabilities`. It may use outcomes in additional ways (reputation, inhibition). On `phase-a-uncertain-v1`, retry-only is expected to reach the same success/quality as a competent MeshyAnts — that is `falsified`, not a MeshyAnts win. A later fixture must separate reputation from retry.
 
 `single_agent` always uses one instance of `single_agent_phenotype_id`.
 
+`Verify` is `CanonicalJSON` equality plus `binary_from_verifier`. `Triggered` is the success-denominator helper. Do not invent another equality or arrival rule.
+
 ## Failure injection
 
-Contract v1 allows only `failure_injection: null` or `{"kind":"none"}`. Kinds `kill_worker`, `expire_lease`, `replay_message`, `stale_owner`, `duplicate_task`, `malformed_capability_ad` are reserved and invalid until a later contract version. `lease_contract_ref`, if set, must be a file that exists.
+Contract v1 allows only `failure_injection: null` or `{"kind":"none"}`. Other kinds are reserved. `lease_contract_ref`, if set, must parse as `{kind: exclusive_fence, fencing: token, exactly_once: true}`. A task set or sibling JSON file is not a lease.
 
 ## Fixtures
 
 - `docs/experiments/examples/phase-a-synthetic/` — labeled calibration DAG
 - `docs/experiments/examples/phase-a-uncertain/` — decisive Phase A fixture (5/12 tasks have empty or wrong visible labels)
 
-`go run ./cmd/expcontract validate` on either `run.json`. Import `Execute` / `AssignStatic` rather than reinventing them.
+`go run ./cmd/expcontract validate` on either `run.json`. Import `Execute`, `Verify`, `Triggered`, `AssignStaticRetry`, `RunStaticRetry`, and `MakespanMS`.
