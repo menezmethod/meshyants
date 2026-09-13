@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meshyants.dev/experiments/schema/comparison.schema.json",
+  "title": "MeshyAnts multi-arm comparison",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "run_id",
+    "repeats",
+    "seeds",
+    "allocation_verdict",
+    "per_metric"
+  ],
+  "properties": {
+    "contract_version": { "const": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "repeats": { "type": "integer", "minimum": 3 },
+    "seeds": { "type": "array", "items": { "type": "integer" } },
+    "allocation_verdict": {
+      "enum": ["meshyants_advantage", "falsified", "mixed", "inconclusive"]
+    },
+    "emergence_delta_mean": { "type": ["number", "null"] },
+    "per_metric": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["group", "winner", "decision", "means"],
+        "properties": {
+          "group": { "enum": ["allocation", "emergence"] },
+          "winner": { "type": "string" },
+          "decision": { "enum": ["significant", "tie"] },
+          "means": { "type": "object", "additionalProperties": { "type": "number" } }
+        }
+      }
+    },
+    "notes": { "type": "string" }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meshyants.dev/experiments/schema/worker-pool.schema.json",
+  "title": "MeshyAnts experiment worker pool",
+  "description": "Opaque phenotype IDs plus capability labels. MESH-102 owns the full phenotype schema; this file only freezes the pool used by a run.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "instances"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "instances": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["instance_id", "phenotype_id", "capabilities"],
+        "properties": {
+          "instance_id": { "type": "string", "minLength": 1 },
+          "phenotype_id": { "type": "string", "minLength": 1 },
+          "capabilities": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "simulate_exec_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

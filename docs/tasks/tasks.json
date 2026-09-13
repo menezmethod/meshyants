@@ -25,7 +25,7 @@
       "workstream": "science",
       "type": "research",
       "priority": 1,
-      "status": "ready",
+      "status": "done",
       "depends_on": [],
       "hypothesis": "A small, explicit experiment contract will prevent MeshyAnts from becoming an unfalsifiable agent framework.",
       "deliverables": [
@@ -41,7 +41,16 @@
       "evidence_required": [
         "example benchmark run spec",
         "critic sign-off"
-      ]
+      ],
+      "evidence": [
+        "docs/experiments/CONTRACT.md",
+        "docs/experiments/examples/phase-a-uncertain/run.json",
+        "docs/experiments/examples/phase-a-synthetic/run.json",
+        "docs/results/MESH-101/round-3.json",
+        "go test ./internal/expcontract",
+        "critic sign-off: PASS WITH RISKS (round 3; skeptic 15, scheduler 16, failure 17, slop 17)"
+      ],
+      "limitations": "phase-a-uncertain-v1 saturates success/quality against AssignStaticRetry; a MeshyAnts win on those metrics here is falsified. Exclusive-effect fencing is paper until MESH-102. Harness execution is MESH-103."
     },
     {
       "id": "MESH-102",

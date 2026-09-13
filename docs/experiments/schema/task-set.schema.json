@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meshyants.dev/experiments/schema/task-set.schema.json",
+  "title": "MeshyAnts benchmark task set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "tasks"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/task" }
+    }
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "class",
+        "required_capabilities",
+        "tool",
+        "arrival",
+        "exclusive_side_effect",
+        "timeout_ms",
+        "max_attempts",
+        "verifier",
+        "quality_oracle"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "class": {
+          "enum": [
+            "homogeneous_dag",
+            "heterogeneous_uncertain",
+            "perturbation",
+            "durable_dag"
+          ]
+        },
+        "required_capabilities": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "true_capabilities": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tool": {
+          "enum": [
+            "json.add_count",
+            "json.pick_keys",
+            "json.merge",
+            "json.sort_keys",
+            "json.unwrap_msg",
+            "json.wrap_text",
+            "text.classify"
+          ]
+        },
+        "arrival": {
+          "oneOf": [
+            { "const": "initial" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["on_success_of"],
+              "properties": { "on_success_of": { "type": "string", "minLength": 1 } }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["on_failure_of"],
+              "properties": { "on_failure_of": { "type": "string", "minLength": 1 } }
+            }
+          ]
+        },
+        "exclusive_side_effect": { "type": "boolean" },
+        "timeout_ms": { "type": "integer", "minimum": 1 },
+        "max_attempts": { "type": "integer", "minimum": 1 },
+        "payload": true,
+        "payload_ref": { "type": "string", "minLength": 1 },
+        "simulate_exec_ms": { "type": "integer", "minimum": 0 },
+        "verifier": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": {
+              "enum": [
+                "deterministic_json_equal",
+                "deterministic_command",
+                "rubric_score",
+                "human_label"
+              ]
+            },
+            "expected": true,
+            "expected_ref": { "type": "string" },
+            "command": { "type": "array", "items": { "type": "string" } },
+            "stdout_match": { "type": "string" },
+            "rubric_ref": { "type": "string" },
+            "labels_ref": { "type": "string" }
+          }
+        },
+        "quality_oracle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": {
+              "enum": ["binary_from_verifier", "rubric_score", "explicit_field"]
+            },
+            "field": { "type": "string" },
+            "rubric_ref": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

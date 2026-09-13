@@ -1,0 +1,64 @@
+{
+  "task_id": "MESH-101",
+  "round": 2,
+  "hypothesis": "A small, explicit experiment contract will prevent MeshyAnts from becoming an unfalsifiable agent framework.",
+  "falsification_condition": "Another agent still has to invent tool semantics, baseline assignment, mismatch behavior, metrics, budget rules, or verdict math; or the contract accepts handicapped specs.",
+  "implementation_config_sha": "9334f78",
+  "benchmark_inputs": {
+    "run_spec": "docs/experiments/examples/phase-a-uncertain/run.json",
+    "calibration_spec": "docs/experiments/examples/phase-a-synthetic/run.json",
+    "seeds": [1, 2, 3],
+    "rng_algorithm": "go-math-rand-v2-pcg"
+  },
+  "scorecard": {
+    "scientific_validity": 3,
+    "simpler_baseline_advantage": 2,
+    "performance_cost": 3,
+    "resilience_scalability": 2,
+    "code_experiment_quality": 4,
+    "total": 14,
+    "notes": "Evaluator totals: skeptic 12 REJECT, scheduler 14 PASS WITH RISKS, failure 14 REJECT, slop 15 PASS WITH RISKS. Gate remains REJECT."
+  },
+  "evaluator_verdicts": [
+    {
+      "role": "scientific_skeptic",
+      "verdict": "REJECT",
+      "total": 12,
+      "strongest_objection": "Locked IV is assign-once vs retry; a one-line requeue-on-mismatch baseline reproduces the intended MeshyAnts gap. Clock/queue/tools-array still invented."
+    },
+    {
+      "role": "scheduler_critic",
+      "verdict": "PASS WITH RISKS",
+      "total": 14,
+      "strongest_objection": "AssignStaticRetry would tie MeshyAnts on the decisive fixture; the required simpler arms cannot retry."
+    },
+    {
+      "role": "failure_critic",
+      "verdict": "REJECT",
+      "total": 14,
+      "strongest_objection": "lease_contract_ref still accepts any existing sibling file."
+    },
+    {
+      "role": "slop_evaluator",
+      "verdict": "PASS WITH RISKS",
+      "total": 15,
+      "strongest_objection": "Verify, T_triggered, and run-spec tools array remain unlocked."
+    }
+  ],
+  "baseline_results": "Thought-reproduction only. AssignStatic no-retry on uncertain fixture ~8/12. Retry-exclude-failed reaches 12/12.",
+  "cost_latency_model_calls": {
+    "wall_time_ms": null,
+    "model_calls": 0,
+    "note": "go test ./internal/expcontract passed at 9334f78."
+  },
+  "strongest_objection": "The decisive fixture tests retry permission, not MeshyAnts allocation. Same class of blocker as round 1 (handicapped simpler system / invented rules).",
+  "previous_round_delta": {
+    "total": 1,
+    "from": 13,
+    "to": 14,
+    "repeated_blocker": "handicapped or unspecified simpler baseline"
+  },
+  "next_action": "Round 3 architectural rethink: required baselines use AssignStaticRetry; lock Verify and Triggered; reject dummy lease files; expect Phase A all-tie to falsify unless MeshyAnts beats a retrying router.",
+  "loop_verdict": "REJECT",
+  "stall_note": "STALL APPROACHING: same material blocker twice. Round 3 is one deliberate rethink, not incremental tweaking."
+}

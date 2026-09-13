@@ -1,0 +1,209 @@
+{
+  "id": "phase-a-synthetic-v1",
+  "tasks": [
+    {
+      "id": "json-add-count",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["json.transform"],
+      "tool": "json.add_count",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "items": ["a", "b", "c"] },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "items": ["a", "b", "c"], "n": 3 }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "json-pick-keys",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["json.transform"],
+      "tool": "json.pick_keys",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "keep": ["id", "ok"], "id": 7, "ok": true, "drop": "x" },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "id": 7, "ok": true }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "json-merge",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["json.transform"],
+      "tool": "json.merge",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "left": { "a": 1 }, "right": { "b": 2 } },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "a": 1, "b": 2 }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "json-sort-keys",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["json.transform"],
+      "tool": "json.sort_keys",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "keys": ["c", "a", "b"] },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "keys": ["a", "b", "c"] }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "classify-infra",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["text.classify"],
+      "tool": "text.classify",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "text": "error: disk full on /var" },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "label": "infra" }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "classify-auth",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["text.classify"],
+      "tool": "text.classify",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "text": "invalid token for user 42" },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "label": "auth" }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "classify-billing",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["text.classify"],
+      "tool": "text.classify",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "text": "invoice 991 unpaid" },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "label": "billing" }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "classify-other",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["text.classify"],
+      "tool": "text.classify",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "text": "hello from the waiting room" },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "label": "other" }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "pipeline-extract",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["json.transform"],
+      "tool": "json.unwrap_msg",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "raw": { "msg": "error: disk full on /var" } },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "text": "error: disk full on /var" }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "pipeline-classify",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["text.classify"],
+      "tool": "text.classify",
+      "arrival": { "on_success_of": "pipeline-extract" },
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "text": "error: disk full on /var" },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "label": "infra" }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "trap-json-looking-text",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["json.transform"],
+      "tool": "json.wrap_text",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "text": "this looks classifiable but must be wrapped" },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "wrapped": true, "n": 1 }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    },
+    {
+      "id": "trap-text-looking-json",
+      "class": "homogeneous_dag",
+      "required_capabilities": ["text.classify"],
+      "tool": "text.classify",
+      "arrival": "initial",
+      "exclusive_side_effect": false,
+      "timeout_ms": 2000,
+      "max_attempts": 3,
+      "payload": { "text": "{\"label\":\"please-ignore-this-json\"}" },
+      "simulate_exec_ms": 10,
+      "verifier": {
+        "kind": "deterministic_json_equal",
+        "expected": { "label": "other" }
+      },
+      "quality_oracle": { "kind": "binary_from_verifier" }
+    }
+  ]
+}

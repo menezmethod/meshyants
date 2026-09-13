@@ -1,0 +1,63 @@
+{
+  "task_id": "MESH-101",
+  "round": 1,
+  "hypothesis": "A small, explicit experiment contract will prevent MeshyAnts from becoming an unfalsifiable agent framework.",
+  "falsification_condition": "Another agent still has to invent metrics, budget rules, tool semantics, baseline assignment, or verdict math; or the contract accepts handicapped/incomparable specs.",
+  "implementation_config_sha": "cbef66d",
+  "benchmark_inputs": {
+    "run_spec": "docs/experiments/examples/phase-a-synthetic/run.json",
+    "seeds": [1, 2, 3],
+    "rng_algorithm": "go-math-rand-v2-pcg"
+  },
+  "scorecard": {
+    "scientific_validity": 3,
+    "simpler_baseline_advantage": 2,
+    "performance_cost": 3,
+    "resilience_scalability": 2,
+    "code_experiment_quality": 3,
+    "total": 13,
+    "notes": "Composite is median-ish across five evaluators. Totals were 8/12/17/12/13. Gate is REJECT because two evaluators rejected."
+  },
+  "evaluator_verdicts": [
+    {
+      "role": "scientific_skeptic",
+      "verdict": "REJECT",
+      "total": 8,
+      "strongest_objection": "The first 'decisive' fixture is a labeled deterministic DAG; tool semantics and baseline algorithms are unspecified; Compare and run.json disagree on ties."
+    },
+    {
+      "role": "scheduler_critic",
+      "verdict": "PASS WITH RISKS",
+      "total": 12,
+      "strongest_objection": "A priority queue + capability labels reproduces the fixture; all-tie is scored inconclusive so MeshyAnts stays unfalsified by default."
+    },
+    {
+      "role": "performance_critic",
+      "verdict": "PASS WITH RISKS",
+      "total": 17,
+      "strongest_objection": "Compare can emit meshyants_advantage without event-amplification gates."
+    },
+    {
+      "role": "failure_critic",
+      "verdict": "REJECT",
+      "total": 12,
+      "strongest_objection": "failure_injection is untyped; lease_contract_ref is any non-empty string."
+    },
+    {
+      "role": "slop_evaluator",
+      "verdict": "PASS WITH RISKS",
+      "total": 13,
+      "strongest_objection": "bootstrap_ci_95 is a stub; execution, mismatch, and manager policy are still invented by the next agent."
+    }
+  ],
+  "baseline_results": "No harness runs. Thought-reproduction: a capability-matched least-loaded specialist queue scores 12/12 on the labeled fixture.",
+  "cost_latency_model_calls": {
+    "wall_time_ms": null,
+    "model_calls": 0,
+    "note": "Contract validation only; go test ./internal/expcontract passed after verdict-boundary fix."
+  },
+  "strongest_objection": "MESH-103 can still invent the experiment: unlabeled tool semantics, unspecified baselines, and a 'uncertain/decisive' label on a known-skill DAG.",
+  "previous_round_delta": null,
+  "next_action": "Round 2: relabel the DAG as non-decisive calibration; add an uncertain fixture with true_capabilities; lock tools, mismatch, and static assignment; align verdicts; close failure_injection; delete bootstrap stub; require secondaries for advantage.",
+  "loop_verdict": "REJECT"
+}
