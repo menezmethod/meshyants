@@ -188,9 +188,9 @@ Verdict vocabulary (allocation group, Phase A):
 | Verdict | Meaning |
 |---|---|
 | `meshyants_advantage` | MeshyAnts is significant-better on ≥1 primary metric and not significant-worse on any other primary metric |
-| `falsified` | `central_router` or `manager_worker` matches or beats MeshyAnts on **all** primary metrics (ties count as matches) |
+| `falsified` | `central_router` or `manager_worker` is tied-or-better on every primary metric **and** significant-better on at least one |
 | `mixed` | Each side is significant-better on at least one primary metric |
-| `inconclusive` | No significant differences, or repeats below the minimum |
+| `inconclusive` | No significant differences (including all-tie), or repeats below the minimum |
 
 A MeshyAnts wall-time win that is only vs `single_agent` is `inconclusive` for allocation.
 

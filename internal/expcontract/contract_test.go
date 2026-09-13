@@ -109,15 +109,29 @@ func TestRejectsUnknownArrivalParent(t *testing.T) {
 	require.Error(t, spec.Validate())
 }
 
-func TestCompareFalsifiedWhenRouterMatches(t *testing.T) {
+func TestCompareAllTieIsInconclusive(t *testing.T) {
 	t.Parallel()
 	spec := loadClone(t)
 	rows := evenRows(spec, 1.0, 1.0, 0, 100, 0)
 	report, err := expcontract.Compare(spec, rows)
 	require.NoError(t, err)
-	require.Equal(t, expcontract.VerdictFalsified, report.AllocationVerdict)
+	require.Equal(t, expcontract.VerdictInconclusive, report.AllocationVerdict)
 	require.NotNil(t, report.EmergenceDeltaMean)
 	require.Equal(t, 0.0, *report.EmergenceDeltaMean)
+}
+
+func TestCompareFalsifiedWhenRouterBeatsQuality(t *testing.T) {
+	t.Parallel()
+	spec := loadClone(t)
+	rows := evenRows(spec, 1.0, 0.7, 0, 100, 0)
+	for i := range rows {
+		if rows[i].System == expcontract.SystemCentralRouter || rows[i].System == expcontract.SystemManagerWorker {
+			rows[i].Metrics[expcontract.MetricQuality] = 0.95
+		}
+	}
+	report, err := expcontract.Compare(spec, rows)
+	require.NoError(t, err)
+	require.Equal(t, expcontract.VerdictFalsified, report.AllocationVerdict)
 }
 
 func TestCompareMeshyAntsAdvantageOnQuality(t *testing.T) {
@@ -127,8 +141,7 @@ func TestCompareMeshyAntsAdvantageOnQuality(t *testing.T) {
 	for _, seed := range spec.Seeds {
 		for j := range rows {
 			if rows[j].System == expcontract.SystemMeshyAnts && rows[j].Seed == seed {
-				rows[j].Metrics[expcontract.MetricQuality] = 0.95
-				rows[j].Metrics[expcontract.MetricSuccessRate] = 0.95
+				rows[j].Metrics[expcontract.MetricQuality] = 0.9
 			}
 		}
 	}
@@ -150,6 +163,21 @@ func TestCompareProtocolViolationIsInconclusive(t *testing.T) {
 	report, err := expcontract.Compare(spec, rows)
 	require.NoError(t, err)
 	require.Equal(t, expcontract.VerdictInconclusive, report.AllocationVerdict)
+}
+
+func TestCompareNoiseThresholdIsTie(t *testing.T) {
+	t.Parallel()
+	spec := loadClone(t)
+	rows := evenRows(spec, 1.0, 0.70, 0, 100, 0)
+	for i := range rows {
+		if rows[i].System == expcontract.SystemMeshyAnts {
+			rows[i].Metrics[expcontract.MetricQuality] = 0.75 // exactly +0.05, the noise threshold
+		}
+	}
+	report, err := expcontract.Compare(spec, rows)
+	require.NoError(t, err)
+	require.Equal(t, expcontract.VerdictInconclusive, report.AllocationVerdict)
+	require.Equal(t, "tie", report.PerMetric[expcontract.MetricQuality].Decision)
 }
 
 func TestCompareBudgetExceededZerosQuality(t *testing.T) {

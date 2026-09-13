@@ -191,7 +191,9 @@ func Compare(spec *RunSpec, rows []ArmRepeat) (*ComparisonReport, error) {
 	}
 
 	switch {
-	case managerDominates || routerDominates:
+	case (managerDominates || routerDominates) && worseCount >= 1:
+		// A simpler arm is tied-or-better on every primary and significantly
+		// better on at least one. All-tie is inconclusive, not falsified.
 		report.AllocationVerdict = VerdictFalsified
 	case betterCount >= 1 && worseCount == 0:
 		report.AllocationVerdict = VerdictAdvantage
@@ -246,10 +248,12 @@ func decidePair(mesh, other []float64, higher bool, absNoise, relNoise float64, 
 		// Same information with n=3; treat as paired-sign until MESH-103 records enough repeats.
 		need = int(math.Ceil(0.8 * float64(spec.Repeats)))
 	}
+	// |diff| <= noise is a tie, including float error on the threshold.
+	const eps = 1e-9
 	switch {
-	case meanDiff > noise && pos >= need:
+	case meanDiff > noise+eps && pos >= need:
 		return pairResult{meshBetter: true}
-	case meanDiff < -noise && neg >= need:
+	case meanDiff < -(noise+eps) && neg >= need:
 		return pairResult{otherBetter: true}
 	default:
 		return pairResult{}
