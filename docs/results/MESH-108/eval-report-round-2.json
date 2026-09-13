@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "task_id": "MESH-108",
+  "hypothesis": "A machine-checked evaluator report can reject work, require a strongest simpler explanation, and turn negatives into task drafts.",
+  "falsification_condition": "Fluent aesthetic evidence advances; done without an advancing report passes check-tasks; schema-only matches evalgate on vacuity.",
+  "round": 2,
+  "previous_total": 10,
+  "composite_verdict": "REJECT",
+  "scorecard": {
+    "scientific_validity": 2,
+    "simpler_baseline_advantage": 1,
+    "performance_cost": 4,
+    "resilience_scalability": 2,
+    "code_experiment_quality": 3
+  },
+  "baseline_results": "schemaOnlyAccepts in internal/evalgate/gate_test.go accepts testdata/fluent_stamp.json and testdata/rubber_stamp.json; evalgate rejects both. Scheduler: a schema pattern equal to hasConcreteAnchor ties that split.",
+  "cost_latency_model_calls": "go test -race ./internal/evalgate/ ~1.0s; 0 in-gate model calls",
+  "evaluators": [
+    {
+      "id": "scientific_skeptic",
+      "verdict": "REJECT",
+      "evidence": [
+        "internal/evalgate/gate.go hasConcreteAnchor treated MESH-108, lone digits, and elegant.go as anchors. Probe evidence 'MESH-108 is elegant' still Advanced before the rethink.",
+        "internal/evalgate/gate.go CheckTasks did not compare report.task_id to the queue id; testdata/valid_pass.json under MESH-FAKE would pass."
+      ],
+      "strongest_objection": "The revised claim that the gate blocks rubber stamps is still false under token games and borrowed reports.",
+      "strongest_simpler_explanation": "A jq/schema rule requiring a digit, slash, MESH-, or filename ties the measured vacuity split.",
+      "repeated_blocker": false,
+      "target_challenge": "yes — independent judgment is not operationalized by a lexical predicate",
+      "next_experiment": "Require path or unit-bearing metric; bind task_id; reject all-not_applicable.",
+      "what_would_reverse_conclusion": "Token-gamed aesthetic evidence and mismatched task_id are rejected; all-not_applicable cannot PASS.",
+      "findings": [
+        {
+          "severity": "reject",
+          "summary": "Token-gamed and not_applicable rubber stamps still Advance",
+          "evidence": "internal/evalgate/gate.go hasConcreteAnchor accepted MESH- tokens, lone digits, and bare filenames.",
+          "proposed_task": {
+            "title": "Reject token-gamed and not_applicable rubber-stamp reports",
+            "workstream": "quality",
+            "type": "implementation",
+            "hypothesis": "Path-or-metric anchors plus a ban on all-not_applicable will reject the token-game fixtures.",
+            "falsification_condition": "MESH-108 is elegant or all-not_applicable still Advances."
+          }
+        }
+      ]
+    },
+    {
+      "id": "scheduler_critic",
+      "verdict": "REJECT",
+      "evidence": [
+        "internal/evalgate/gate_test.go TestGate_SchemaOnlyBaselineLosesOnVacuity beats required-field presence. A JSON Schema pattern matching hasConcreteAnchor ties the four testdata fixtures.",
+        ".github/workflows/ci.yml check-tasks is a directory walk a shell hook can do."
+      ],
+      "strongest_objection": "The Go package is not required for reject/spawn/done-hook.",
+      "strongest_simpler_explanation": "Tighten docs/tasks/eval-report.schema.json and use jq+shell check-tasks; drop internal/evalgate.",
+      "repeated_blocker": true,
+      "repeated_blocker_what": "checklist_or_schema ties evalgate on reject/spawn once the schema encodes the same heuristic",
+      "target_challenge": "yes — claiming a Go package advantage vs the schema as written without a vacuity pattern is the wrong metric",
+      "next_experiment": "Stop claiming advantage over schema; treat Go as an in-repo implementation choice.",
+      "simpler_system": "checklist_or_schema",
+      "simpler_system_outcome": "ties",
+      "findings": [
+        {
+          "severity": "reject",
+          "summary": "Pattern-tightened schema ties evalgate on measured fixtures",
+          "evidence": "testdata/fluent_stamp.json and testdata/rubber_stamp.json are rejected by the same lexical class a schema pattern can express.",
+          "proposed_task": {
+            "title": "Drop the Go-vs-schema advantage claim",
+            "workstream": "quality",
+            "type": "research",
+            "hypothesis": "The success criteria can be met without claiming evalgate beats JSON Schema.",
+            "falsification_condition": "A later round again scores simpler_baseline_advantage >= 3 against a field-presence-only schema."
+          }
+        }
+      ]
+    },
+    {
+      "id": "performance_critic",
+      "verdict": "PASS",
+      "evidence": [
+        "go test -race ./internal/evalgate/ ~1s. internal/evalgate/gate.go LoadReport stats then LimitReader. .github/workflows/ci.yml runs check-tasks. 0 model calls."
+      ],
+      "strongest_objection": "Decide latency is still a budget, not ns/op.",
+      "strongest_simpler_explanation": "A CI JSON Schema check is the same cost class.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Time LoadReport on a near-MaxReportBytes file.",
+      "measurements": {
+        "wall_time": "~1s race tests",
+        "model_calls": "0"
+      }
+    },
+    {
+      "id": "failure_critic",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "TestLoadReport_BoundedFile in internal/evalgate/gate_test.go: MaxReportBytes+8 → ErrTooLarge. CheckTasks still used os.ReadFile before the rethink."
+      ],
+      "strongest_objection": "CheckTasks size bound was post-hoc; task ids were not sanitized.",
+      "strongest_simpler_explanation": "Reuse Open+Stat+LimitReader for tasks.json.",
+      "repeated_blocker": true,
+      "repeated_blocker_what": "unbounded slurp before MaxReportBytes moved from LoadReport to CheckTasks",
+      "target_challenge": "no",
+      "next_experiment": "Fence CheckTasks like LoadReport; bind task_id; reject unsafe ids.",
+      "perturbations_considered": [
+        "oversized_json",
+        "oversized_tasks_json",
+        "mismatched_task_id",
+        "path_escape"
+      ],
+      "findings": [
+        {
+          "severity": "risk",
+          "summary": "CheckTasks size bound is post-hoc",
+          "evidence": "internal/evalgate/gate.go CheckTasks used os.ReadFile then len check.",
+          "proposed_task": {
+            "title": "Bound CheckTasks memory before decoding tasks.json",
+            "workstream": "quality",
+            "type": "implementation",
+            "hypothesis": "A tasks.json larger than MaxReportBytes fails without a full slurp.",
+            "falsification_condition": "CheckTasks on a >MaxReportBytes tempfile succeeds or slurps first."
+          }
+        }
+      ]
+    },
+    {
+      "id": "slop_evaluator",
+      "verdict": "PASS",
+      "evidence": [
+        ".github/workflows/ci.yml invokes cmd/evalgate check-tasks. TestCheckTasks_DoneRequiresAdvancingReport binds done to an advancing report. testdata/fluent_stamp.json is rejected."
+      ],
+      "strongest_objection": "Four encodings of one contract remain.",
+      "strongest_simpler_explanation": "Keep the package plus check-tasks; schema is the losing field-presence baseline.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Stop claiming schema cannot encode the heuristic.",
+      "invariant_named": "done requires a matching advancing eval-report.json; vacuous evidence cannot PASS; reject/risk findings propose tasks.",
+      "deletion_candidate": "A Go-vs-schema advantage claim, not the check-tasks hook."
+    }
+  ]
+}

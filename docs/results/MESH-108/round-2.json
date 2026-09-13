@@ -1,0 +1,51 @@
+{
+  "task_id": "MESH-108",
+  "round": 2,
+  "hypothesis": "A machine-checked evaluator report can reject work, require a strongest simpler explanation, and turn negatives into task drafts. It does not replace independent scientific judgment.",
+  "falsification_condition": "Fluent aesthetic evidence advances; status=done without an advancing report passes check-tasks; a schema-only checker matches evalgate on vacuity.",
+  "implementation_config_sha": "a4a3d6e",
+  "benchmark_inputs": {
+    "fixtures": [
+      "internal/evalgate/testdata/valid_pass.json",
+      "internal/evalgate/testdata/valid_reject.json",
+      "internal/evalgate/testdata/rubber_stamp.json",
+      "internal/evalgate/testdata/fluent_stamp.json"
+    ],
+    "baseline": "schema-only required-field presence (docs/tasks/eval-report.schema.json as written)"
+  },
+  "random_seeds": [],
+  "scorecard": {
+    "scientific_validity": 2,
+    "simpler_baseline_advantage": 1,
+    "performance_cost": 4,
+    "resilience_scalability": 2,
+    "code_experiment_quality": 3,
+    "total": 12
+  },
+  "evaluator_verdicts": {
+    "scientific_skeptic": "REJECT",
+    "scheduler_critic": "REJECT",
+    "performance_critic": "PASS",
+    "failure_critic": "PASS WITH RISKS",
+    "slop_evaluator": "PASS"
+  },
+  "composite_verdict": "REJECT",
+  "baseline_results": "schemaOnlyAccepts accepts testdata/rubber_stamp.json and testdata/fluent_stamp.json; evalgate rejects both. Fresh-context scheduler: a JSON Schema pattern equal to hasConcreteAnchor ties that split. Token-gamed evidence (MESH-108 is elegant, looks good 5, elegant.go) still Advances. CheckTasks does not bind report.task_id to the queue id.",
+  "cost_latency_model_calls": "go test -race ./internal/evalgate/ ~1.0s; 0 model calls in-gate; three fresh-context judge agents.",
+  "strongest_objection": "Repeated blocker: a tightened schema+jq checker matches the claimed reject/spawn/done-hook. hasConcreteAnchor is a lexical proxy and is gameable. The original tasks.json hypothesis (independent judgment prevents mistaken progress) is not what was tested.",
+  "previous_round_delta": {
+    "total": 2,
+    "from": 10,
+    "to": 12,
+    "regressions": [],
+    "closed_findings": [
+      "fluent 24+ aesthetic evidence now rejected",
+      "LoadReport stats before slurp",
+      "check-tasks + CI hook exists"
+    ]
+  },
+  "next_action": "Architectural rethink (stall approaching: schema-ties blocker twice). Narrow the hypothesis; stop claiming advantage over schema; bind task_id; reject all-not_applicable PASS; require path or unit-bearing metric, not MESH-/digit/filename tokens; fence CheckTasks.",
+  "loop_decision": "rethink",
+  "convergence": "STALL APPROACHING — same material blocker (checklist_or_schema ties) in rounds 1 and 2",
+  "eval_report": "docs/results/MESH-108/eval-report-round-2.json"
+}

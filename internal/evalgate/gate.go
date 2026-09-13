@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"unicode"
 )
 
 var (
@@ -20,19 +19,29 @@ var (
 
 var vacuousWhole = regexp.MustCompile(`(?i)^(lgtm|looks good\.?|seems fine\.?|ship it\.?|elegant\.?|novel\.?|clean( code| architecture)?\.?)$`)
 
-func LoadReport(path string) (*Report, error) {
+func openBounded(path string) (*os.File, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
 	st, err := f.Stat()
 	if err != nil {
+		f.Close()
 		return nil, err
 	}
 	if st.Size() > int64(MaxReportBytes) {
+		f.Close()
 		return nil, ErrTooLarge
 	}
+	return f, nil
+}
+
+func LoadReport(path string) (*Report, error) {
+	f, err := openBounded(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
 	return DecodeReport(io.LimitReader(f, int64(MaxReportBytes)+1))
 }
 
@@ -102,6 +111,15 @@ func Validate(report *Report) error {
 	}
 	if extra := extraEvaluators(seen); extra != "" {
 		return fmt.Errorf("%w: unknown evaluator %s", ErrInvalidReport, extra)
+	}
+	active := 0
+	for _, ev := range report.Evaluators {
+		if !ev.NotApplicable {
+			active++
+		}
+	}
+	if active == 0 {
+		return fmt.Errorf("%w: at least one evaluator must be active (all not_applicable is a rubber stamp)", ErrInvalidReport)
 	}
 
 	derived := deriveVerdict(report)
@@ -273,7 +291,8 @@ func allEvidenceVacuous(evidence []string) bool {
 	return true
 }
 
-var fileExt = regexp.MustCompile(`(?i)[A-Za-z0-9._-]+\.(go|json|md|yml|yaml|txt|proto)`)
+// metric needs a number plus a unit so "looks good 5" is not an anchor.
+var metric = regexp.MustCompile(`(?i)[0-9]+(\.[0-9]+)?\s*(ms|ns|µs|us|s|m|h|kib|kb|mb|%|x|calls)\b`)
 
 func hasConcreteAnchor(s string) bool {
 	if strings.ContainsAny(s, "/\\") {
@@ -282,22 +301,10 @@ func hasConcreteAnchor(s string) bool {
 	if strings.Contains(s, "://") {
 		return true
 	}
-	lower := strings.ToLower(s)
-	if strings.Contains(lower, "testdata") {
+	if strings.Contains(strings.ToLower(s), "testdata") {
 		return true
 	}
-	if strings.Contains(s, "MESH-") {
-		return true
-	}
-	if fileExt.MatchString(s) {
-		return true
-	}
-	for _, r := range s {
-		if unicode.IsDigit(r) {
-			return true
-		}
-	}
-	return false
+	return metric.MatchString(s)
 }
 
 func vacuousEvidence(e string) bool {
@@ -431,8 +438,23 @@ func TaskMayBecomeDone(status string, report *Report) error {
 // CheckTasks is the research-loop done hook: every task with status=done
 // must have resultsDir/<id>/eval-report.json that Decide allows to advance.
 // It only reads tasks.json; it never rewrites the shared queue.
+func safeTaskID(id string) bool {
+	if id == "" || id != filepath.Clean(id) {
+		return false
+	}
+	if strings.Contains(id, "..") || strings.ContainsAny(id, `/\`) {
+		return false
+	}
+	return true
+}
+
 func CheckTasks(tasksPath, resultsDir string) error {
-	b, err := os.ReadFile(tasksPath)
+	f, err := openBounded(tasksPath)
+	if err != nil {
+		return err
+	}
+	b, err := io.ReadAll(io.LimitReader(f, int64(MaxReportBytes)+1))
+	f.Close()
 	if err != nil {
 		return err
 	}
@@ -453,10 +475,18 @@ func CheckTasks(tasksPath, resultsDir string) error {
 		if t.Status != "done" {
 			continue
 		}
+		if !safeTaskID(t.ID) {
+			blockers = append(blockers, fmt.Sprintf("%s: unsafe task id", t.ID))
+			continue
+		}
 		reportPath := filepath.Join(resultsDir, t.ID, "eval-report.json")
 		report, err := LoadReport(reportPath)
 		if err != nil {
 			blockers = append(blockers, fmt.Sprintf("%s: missing or unreadable %s (%v)", t.ID, reportPath, err))
+			continue
+		}
+		if report.TaskID != t.ID {
+			blockers = append(blockers, fmt.Sprintf("%s: report task_id %q does not match queue id", t.ID, report.TaskID))
 			continue
 		}
 		if err := TaskMayBecomeDone("done", report); err != nil {

@@ -220,7 +220,7 @@
       "priority": 1,
       "status": "in_progress",
       "depends_on": [],
-      "hypothesis": "Independent adversarial evaluation will prevent us from mistaking complexity, benchmark leakage, or attractive demos for progress.",
+      "hypothesis": "A machine-checked evaluator report can reject work, require a strongest simpler explanation, and turn negatives into task drafts. It does not replace independent scientific judgment; it blocks rubber stamps, buried negatives, and done-without-evidence.",
       "deliverables": [
         "scientific skeptic",
         "scheduler/simple-system critic",

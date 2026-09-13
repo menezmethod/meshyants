@@ -119,5 +119,7 @@ insert them into the shared `tasks.json` queue (parallel agents own other IDs).
 
 `evalgate check-tasks docs/tasks/tasks.json docs/results` is the done-status
 hook: every `status=done` task must have `docs/results/<id>/eval-report.json`
-that `decide` allows to advance. CI runs this hook. Evidence without a path,
-filename, `testdata`, `MESH-` id, or metric is treated as vacuous.
+that `decide` allows to advance. CI runs this hook. Evidence without a path (`/` or `testdata` or URL)
+or a unit-bearing metric (e.g. `200ms`, `4x`, `0 calls`) is vacuous.
+A `MESH-` token, a lone digit, or a bare filename is not enough.
+`report.task_id` must match the queue id. All-`not_applicable` is invalid.

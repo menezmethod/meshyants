@@ -419,14 +419,78 @@ func TestCheckTasks_DoneRequiresAdvancingReport(t *testing.T) {
 
 	pass, err := os.ReadFile("testdata/valid_pass.json")
 	require.NoError(t, err)
-	require.NoError(t, os.WriteFile(filepath.Join(results, "MESH-X", "eval-report.json"), pass, 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(results, "MESH-X", "eval-report.json"), rewriteTaskID(t, pass, "MESH-X"), 0o644))
 	require.NoError(t, evalgate.CheckTasks(writeTasks("done"), results))
 
 	rej, err := os.ReadFile("testdata/valid_reject.json")
 	require.NoError(t, err)
-	require.NoError(t, os.WriteFile(filepath.Join(results, "MESH-X", "eval-report.json"), rej, 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(results, "MESH-X", "eval-report.json"), rewriteTaskID(t, rej, "MESH-X"), 0o644))
 	err = evalgate.CheckTasks(writeTasks("done"), results)
 	require.ErrorIs(t, err, evalgate.ErrBlocked)
+}
+
+func rewriteTaskID(t *testing.T, raw []byte, id string) []byte {
+	t.Helper()
+	var doc map[string]any
+	require.NoError(t, json.Unmarshal(raw, &doc))
+	doc["task_id"] = id
+	out, err := json.Marshal(doc)
+	require.NoError(t, err)
+	return out
+}
+
+func TestGate_RejectsTokenGamedEvidence(t *testing.T) {
+	t.Parallel()
+	games := []string{
+		"MESH-108 is elegant and clearly better",
+		"looks good 5",
+		"elegant.go proves this is novel",
+	}
+	for _, ev := range games {
+		r := validPass()
+		r.Evaluators[0].Evidence = []string{ev}
+		err := evalgate.Validate(r)
+		require.ErrorIs(t, err, evalgate.ErrInvalidReport, ev)
+		require.Contains(t, err.Error(), "vacuous", ev)
+	}
+}
+
+func TestGate_RejectsAllNotApplicable(t *testing.T) {
+	t.Parallel()
+	r := validPass()
+	for i := range r.Evaluators {
+		r.Evaluators[i].NotApplicable = true
+		r.Evaluators[i].NotApplicableReason = "skip"
+		r.Evaluators[i].Evidence = nil
+		r.Evaluators[i].StrongestSimplerExplanation = ""
+	}
+	err := evalgate.Validate(r)
+	require.ErrorIs(t, err, evalgate.ErrInvalidReport)
+	require.Contains(t, err.Error(), "not_applicable")
+}
+
+func TestCheckTasks_MismatchedTaskID(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	results := filepath.Join(dir, "results", "MESH-FAKE")
+	require.NoError(t, os.MkdirAll(results, 0o755))
+	pass, err := os.ReadFile("testdata/valid_pass.json")
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(filepath.Join(results, "eval-report.json"), pass, 0o644))
+	tasks := filepath.Join(dir, "tasks.json")
+	require.NoError(t, os.WriteFile(tasks, []byte(`{"tasks":[{"id":"MESH-FAKE","status":"done"}]}`), 0o644))
+	err = evalgate.CheckTasks(tasks, filepath.Join(dir, "results"))
+	require.ErrorIs(t, err, evalgate.ErrBlocked)
+	require.Contains(t, err.Error(), "does not match")
+}
+
+func TestCheckTasks_BoundedFile(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "tasks.json")
+	require.NoError(t, os.WriteFile(path, bytes.Repeat([]byte("x"), evalgate.MaxReportBytes+8), 0o644))
+	err := evalgate.CheckTasks(path, dir)
+	require.ErrorIs(t, err, evalgate.ErrTooLarge)
 }
 
 func TestCheckTasks_RealQueueHasNoDoneWithoutReport(t *testing.T) {
