@@ -26,3 +26,6 @@ jobs:
 
       - name: Test
         run: go test -race -count=1 ./...
+
+      - name: Evalgate done-status hook
+        run: go run ./cmd/evalgate check-tasks docs/tasks/tasks.json docs/results

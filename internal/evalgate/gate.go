@@ -1,12 +1,12 @@
 package evalgate
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"unicode"
@@ -21,11 +21,19 @@ var (
 var vacuousWhole = regexp.MustCompile(`(?i)^(lgtm|looks good\.?|seems fine\.?|ship it\.?|elegant\.?|novel\.?|clean( code| architecture)?\.?)$`)
 
 func LoadReport(path string) (*Report, error) {
-	b, err := os.ReadFile(path)
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-	return DecodeReport(bytes.NewReader(b))
+	defer f.Close()
+	st, err := f.Stat()
+	if err != nil {
+		return nil, err
+	}
+	if st.Size() > int64(MaxReportBytes) {
+		return nil, ErrTooLarge
+	}
+	return DecodeReport(io.LimitReader(f, int64(MaxReportBytes)+1))
 }
 
 func DecodeReport(r io.Reader) (*Report, error) {
@@ -265,6 +273,33 @@ func allEvidenceVacuous(evidence []string) bool {
 	return true
 }
 
+var fileExt = regexp.MustCompile(`(?i)[A-Za-z0-9._-]+\.(go|json|md|yml|yaml|txt|proto)`)
+
+func hasConcreteAnchor(s string) bool {
+	if strings.ContainsAny(s, "/\\") {
+		return true
+	}
+	if strings.Contains(s, "://") {
+		return true
+	}
+	lower := strings.ToLower(s)
+	if strings.Contains(lower, "testdata") {
+		return true
+	}
+	if strings.Contains(s, "MESH-") {
+		return true
+	}
+	if fileExt.MatchString(s) {
+		return true
+	}
+	for _, r := range s {
+		if unicode.IsDigit(r) {
+			return true
+		}
+	}
+	return false
+}
+
 func vacuousEvidence(e string) bool {
 	s := strings.TrimSpace(e)
 	if s == "" {
@@ -273,18 +308,7 @@ func vacuousEvidence(e string) bool {
 	if vacuousWhole.MatchString(s) {
 		return true
 	}
-	if len(s) >= 24 {
-		return false
-	}
-	if strings.ContainsAny(s, "/:") {
-		return false
-	}
-	for _, r := range s {
-		if unicode.IsDigit(r) {
-			return false
-		}
-	}
-	return true
+	return !hasConcreteAnchor(s)
 }
 
 func deriveVerdict(report *Report) Verdict {
@@ -404,12 +428,43 @@ func TaskMayBecomeDone(status string, report *Report) error {
 	return nil
 }
 
-// ChecklistOnlyAccepts models the current unenforced EVALUATORS.md baseline:
-// if the words appear, a rubber-stamp "review" counts. Used as the simpler
-// system in MESH-108's own comparison — not as a production gate.
-func ChecklistOnlyAccepts(text string) bool {
-	lower := strings.ToLower(text)
-	return strings.Contains(lower, "scientific") &&
-		strings.Contains(lower, "pass") &&
-		strings.Contains(lower, "scheduler")
+// CheckTasks is the research-loop done hook: every task with status=done
+// must have resultsDir/<id>/eval-report.json that Decide allows to advance.
+// It only reads tasks.json; it never rewrites the shared queue.
+func CheckTasks(tasksPath, resultsDir string) error {
+	b, err := os.ReadFile(tasksPath)
+	if err != nil {
+		return err
+	}
+	if len(b) > MaxReportBytes {
+		return ErrTooLarge
+	}
+	var doc struct {
+		Tasks []struct {
+			ID     string `json:"id"`
+			Status string `json:"status"`
+		} `json:"tasks"`
+	}
+	if err := json.Unmarshal(b, &doc); err != nil {
+		return fmt.Errorf("%w: tasks.json: %v", ErrInvalidReport, err)
+	}
+	var blockers []string
+	for _, t := range doc.Tasks {
+		if t.Status != "done" {
+			continue
+		}
+		reportPath := filepath.Join(resultsDir, t.ID, "eval-report.json")
+		report, err := LoadReport(reportPath)
+		if err != nil {
+			blockers = append(blockers, fmt.Sprintf("%s: missing or unreadable %s (%v)", t.ID, reportPath, err))
+			continue
+		}
+		if err := TaskMayBecomeDone("done", report); err != nil {
+			blockers = append(blockers, fmt.Sprintf("%s: %v", t.ID, err))
+		}
+	}
+	if len(blockers) > 0 {
+		return fmt.Errorf("%w: %s", ErrBlocked, strings.Join(blockers, "; "))
+	}
+	return nil
 }

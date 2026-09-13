@@ -11,11 +11,27 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 3 {
+	if len(os.Args) < 2 {
 		usage()
 		os.Exit(1)
 	}
 	cmd := os.Args[1]
+	if cmd == "check-tasks" {
+		if len(os.Args) < 4 {
+			usage()
+			os.Exit(1)
+		}
+		if err := evalgate.CheckTasks(os.Args[2], os.Args[3]); err != nil {
+			fmt.Fprintf(os.Stderr, "evalgate: %v\n", err)
+			os.Exit(2)
+		}
+		fmt.Println("ok")
+		return
+	}
+	if len(os.Args) < 3 {
+		usage()
+		os.Exit(1)
+	}
 	path := os.Args[2]
 	report, err := evalgate.LoadReport(path)
 	if err != nil {
@@ -73,5 +89,5 @@ func main() {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "usage:\n  evalgate validate <report.json>\n  evalgate decide <report.json>\n  evalgate spawn <report.json> [-o drafts.json]\n")
+	fmt.Fprintf(os.Stderr, "usage:\n  evalgate validate <report.json>\n  evalgate decide <report.json>\n  evalgate spawn <report.json> [-o drafts.json]\n  evalgate check-tasks <tasks.json> <resultsDir>\n")
 }

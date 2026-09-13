@@ -3,6 +3,7 @@ package evalgate_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -44,7 +45,7 @@ func validPass() *evalgate.Report {
 			{
 				ID:                          evalgate.SchedulerCritic,
 				Verdict:                     evalgate.VerdictPass,
-				Evidence:                    []string{"ChecklistOnlyAccepts returns true for the same rubber-stamp text that evalgate rejects."},
+				Evidence:                    []string{"docs/tasks/eval-report.schema.json accepts testdata/rubber_stamp.json; evalgate Validate rejects it."},
 				StrongestObjection:          "A JSON Schema plus a 50-line validator could encode the same reject/spawn rules.",
 				StrongestSimplerExplanation: "Required fields on round-N.json plus a schema file, without a Go package.",
 				TargetChallenge:             "no — the target is a process gate, not a colony benchmark",
@@ -55,7 +56,7 @@ func validPass() *evalgate.Report {
 			{
 				ID:                          evalgate.PerformanceCritic,
 				Verdict:                     evalgate.VerdictPass,
-				Evidence:                    []string{"Decide on the valid fixture is a pure CPU JSON walk; measured in TestGate_DecideLatency."},
+				Evidence:                    []string{"TestGate_DecideLatency in internal/evalgate/gate_test.go measures 200 Decide calls under 200ms."},
 				StrongestObjection:          "No production CI hook yet, so the gate can be skipped by not invoking it.",
 				StrongestSimplerExplanation: "Document the checklist and do not spend compile time on a gate binary.",
 				TargetChallenge:             "no",
@@ -65,7 +66,7 @@ func validPass() *evalgate.Report {
 			{
 				ID:                          evalgate.FailureCritic,
 				Verdict:                     evalgate.VerdictPass,
-				Evidence:                    []string{"DecodeReport rejects oversized payloads; malformed JSON returns ErrInvalidReport; nil report does not panic."},
+				Evidence:                    []string{"internal/evalgate/gate.go DecodeReport rejects oversized payloads; TestGate_MalformedAndHugeInputs covers nil and malformed JSON."},
 				StrongestObjection:          "There is no lease/fencing surface here; this is a file-shaped report, not a worker protocol.",
 				StrongestSimplerExplanation: "os.ReadFile plus json.Unmarshal without size bounds would be the naive parser.",
 				TargetChallenge:             "no",
@@ -75,7 +76,7 @@ func validPass() *evalgate.Report {
 			{
 				ID:                          evalgate.SlopEvaluator,
 				Verdict:                     evalgate.VerdictPass,
-				Evidence:                    []string{"Tests are named as scenarios (rubber stamp, buried finding, handicapped baseline) rather than field-by-field mirrors."},
+				Evidence:                    []string{"internal/evalgate/gate_test.go names scenario tests (rubber stamp, buried finding, fluent aesthetic) rather than field-by-field mirrors."},
 				StrongestObjection:          "cmd/evalgate could be deleted; go test is enough to exercise the package.",
 				StrongestSimplerExplanation: "Keep only the package and schema; drop the CLI until an agent actually invokes it.",
 				TargetChallenge:             "no",
@@ -259,16 +260,62 @@ func TestGate_NotApplicableRequiresReason(t *testing.T) {
 	require.NoError(t, evalgate.Validate(r))
 }
 
-func TestGate_BaselineChecklistAcceptsRubberStampThatGateRejects(t *testing.T) {
+func TestGate_RejectsFluentAestheticEvidence(t *testing.T) {
 	t.Parallel()
-	stamp := "scientific skeptic: PASS. scheduler critic: looks elegant. ship it."
-	require.True(t, evalgate.ChecklistOnlyAccepts(stamp), "unenforced checklist is the simpler baseline")
-
 	r := validPass()
-	for i := range r.Evaluators {
-		r.Evaluators[i].Evidence = []string{"elegant"}
+	r.Evaluators[0].Evidence = []string{"The architecture is elegant and clearly better than a queue."}
+	err := evalgate.Validate(r)
+	require.ErrorIs(t, err, evalgate.ErrInvalidReport)
+	require.Contains(t, err.Error(), "vacuous")
+}
+
+// schemaOnlyAccepts is the non-handicapped simpler baseline: required-field
+// presence as docs/tasks/eval-report.schema.json encodes it (id+verdict on
+// evaluators, no vacuity rule).
+func schemaOnlyAccepts(path string) bool {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return false
 	}
-	require.Error(t, evalgate.Validate(r), "evalgate must beat the checklist on this fixture")
+	var raw map[string]any
+	if err := json.Unmarshal(b, &raw); err != nil {
+		return false
+	}
+	for _, k := range []string{
+		"schema_version", "task_id", "hypothesis", "falsification_condition",
+		"round", "composite_verdict", "scorecard", "evaluators",
+		"baseline_results", "cost_latency_model_calls",
+	} {
+		if _, ok := raw[k]; !ok {
+			return false
+		}
+	}
+	evs, ok := raw["evaluators"].([]any)
+	if !ok || len(evs) < 5 {
+		return false
+	}
+	for _, e := range evs {
+		m, ok := e.(map[string]any)
+		if !ok {
+			return false
+		}
+		if m["id"] == nil || m["verdict"] == nil {
+			return false
+		}
+	}
+	return true
+}
+
+func TestGate_SchemaOnlyBaselineLosesOnVacuity(t *testing.T) {
+	t.Parallel()
+	require.True(t, schemaOnlyAccepts("testdata/valid_pass.json"))
+	require.True(t, schemaOnlyAccepts("testdata/valid_reject.json"))
+	require.True(t, schemaOnlyAccepts("testdata/rubber_stamp.json"), "schema-only must accept the rubber stamp (no vacuity rule)")
+	require.True(t, schemaOnlyAccepts("testdata/fluent_stamp.json"), "schema-only must accept fluent aesthetic evidence")
+
+	stamp, err := evalgate.LoadReport("testdata/fluent_stamp.json")
+	require.NoError(t, err)
+	require.Error(t, evalgate.Validate(stamp), "evalgate must reject fluent aesthetic evidence that schema-only accepts")
 }
 
 func TestGate_LoadFixtures(t *testing.T) {
@@ -341,6 +388,51 @@ func TestGate_DecideLatency(t *testing.T) {
 	}
 	elapsed := time.Since(start)
 	require.Less(t, elapsed, 200*time.Millisecond, "200 Decide calls should stay cheap")
+}
+
+func TestLoadReport_BoundedFile(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "huge.json")
+	require.NoError(t, os.WriteFile(path, bytes.Repeat([]byte("x"), evalgate.MaxReportBytes+8), 0o644))
+	_, err := evalgate.LoadReport(path)
+	require.ErrorIs(t, err, evalgate.ErrTooLarge)
+}
+
+func TestCheckTasks_DoneRequiresAdvancingReport(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	results := filepath.Join(dir, "results")
+	require.NoError(t, os.MkdirAll(filepath.Join(results, "MESH-X"), 0o755))
+
+	writeTasks := func(status string) string {
+		p := filepath.Join(dir, "tasks-"+status+".json")
+		body := fmt.Sprintf(`{"tasks":[{"id":"MESH-X","status":%q}]}`, status)
+		require.NoError(t, os.WriteFile(p, []byte(body), 0o644))
+		return p
+	}
+
+	require.NoError(t, evalgate.CheckTasks(writeTasks("in_progress"), results), "in_progress needs no report")
+
+	err := evalgate.CheckTasks(writeTasks("done"), results)
+	require.ErrorIs(t, err, evalgate.ErrBlocked, "done with missing report must block")
+
+	pass, err := os.ReadFile("testdata/valid_pass.json")
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(filepath.Join(results, "MESH-X", "eval-report.json"), pass, 0o644))
+	require.NoError(t, evalgate.CheckTasks(writeTasks("done"), results))
+
+	rej, err := os.ReadFile("testdata/valid_reject.json")
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(filepath.Join(results, "MESH-X", "eval-report.json"), rej, 0o644))
+	err = evalgate.CheckTasks(writeTasks("done"), results)
+	require.ErrorIs(t, err, evalgate.ErrBlocked)
+}
+
+func TestCheckTasks_RealQueueHasNoDoneWithoutReport(t *testing.T) {
+	t.Parallel()
+	err := evalgate.CheckTasks("../../docs/tasks/tasks.json", "../../docs/results")
+	require.NoError(t, err, "current queue has no done tasks; hook must be a no-op")
 }
 
 func TestGate_ObservationFindingDoesNotSpawn(t *testing.T) {

@@ -32,7 +32,7 @@
       "id": "scheduler_critic",
       "verdict": "PASS",
       "evidence": [
-        "ChecklistOnlyAccepts returns true for the same rubber-stamp text that evalgate rejects."
+        "docs/tasks/eval-report.schema.json accepts testdata/rubber_stamp.json; evalgate Validate rejects it."
       ],
       "strongest_objection": "A JSON Schema plus a 50-line validator could encode the same reject/spawn rules.",
       "strongest_simpler_explanation": "Required fields on round-N.json plus a schema file, without a Go package.",
@@ -46,7 +46,7 @@
       "id": "performance_critic",
       "verdict": "PASS",
       "evidence": [
-        "Decide on the valid fixture is a pure CPU JSON walk; measured in TestGate_DecideLatency."
+        "TestGate_DecideLatency in internal/evalgate/gate_test.go measures 200 Decide calls under 200ms."
       ],
       "strongest_objection": "No production CI hook yet, so the gate can be skipped by not invoking it.",
       "strongest_simpler_explanation": "Document the checklist and do not spend compile time on a gate binary.",
@@ -62,7 +62,7 @@
       "id": "failure_critic",
       "verdict": "PASS",
       "evidence": [
-        "DecodeReport rejects oversized payloads; malformed JSON returns ErrInvalidReport; nil report does not panic."
+        "internal/evalgate/gate.go DecodeReport rejects oversized payloads; TestGate_MalformedAndHugeInputs covers nil and malformed JSON."
       ],
       "strongest_objection": "There is no lease/fencing surface here; this is a file-shaped report, not a worker protocol.",
       "strongest_simpler_explanation": "os.ReadFile plus json.Unmarshal without size bounds would be the naive parser.",
@@ -81,7 +81,7 @@
       "id": "slop_evaluator",
       "verdict": "PASS",
       "evidence": [
-        "Tests are named as scenarios (rubber stamp, buried finding, handicapped baseline) rather than field-by-field mirrors."
+        "internal/evalgate/gate_test.go names scenario tests (rubber stamp, buried finding, fluent aesthetic) rather than field-by-field mirrors."
       ],
       "strongest_objection": "cmd/evalgate could be deleted; go test is enough to exercise the package.",
       "strongest_simpler_explanation": "Keep only the package and schema; drop the CLI until an agent actually invokes it.",

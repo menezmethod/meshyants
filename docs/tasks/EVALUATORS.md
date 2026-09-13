@@ -116,3 +116,8 @@ Executable rules live in `internal/evalgate`:
 
 `evalgate spawn` writes task drafts to a results artifact. Do not silently
 insert them into the shared `tasks.json` queue (parallel agents own other IDs).
+
+`evalgate check-tasks docs/tasks/tasks.json docs/results` is the done-status
+hook: every `status=done` task must have `docs/results/<id>/eval-report.json`
+that `decide` allows to advance. CI runs this hook. Evidence without a path,
+filename, `testdata`, `MESH-` id, or metric is treated as vacuous.
