@@ -1,86 +1,107 @@
 {
   "task_id": "MESH-107",
-  "hypothesis": "NeuroAI can supply testable mechanisms, but biological analogy should only enter MeshyAnts when converted into a falsifiable software experiment.",
-  "falsification_of_watch": "An adopted idea has no measurable prediction, treats a podcast as evidence, or is already implied by a simpler scheduler with no leftover test.",
-  "schema_version": 1,
-  "adopted": [
+  "schema_version": 2,
+  "hypothesis_original": "NeuroAI can supply testable mechanisms, but biological analogy should only enter MeshyAnts when converted into a falsifiable software experiment.",
+  "hypothesis_revised": "This cycle, NeuroAI supplied experiment-design constraints and rejected translations, not a new coordination primitive. A labeled queue, router, DAG, manager, or Brooks subsumption stack already expresses the v2 software priors. The only leftover empirical question is whether modular+sparse MeshyAnts beats those simpler systems on a heterogeneous failure-prone mix (Experiment A). Biology still must not enter without a prediction that can fail.",
+  "falsification_of_watch": "The watch treats a podcast as evidence, or promotes a v2 prior to a NeuroAI mechanism without a leftover test vs queue/router/DAG/manager/subsumption.",
+  "round_1_finding": "Scheduler critic rejected leftover novelty (score 0). Accepted.",
+  "leftover_empirical_questions": [
     {
-      "id": "A1",
-      "title": "Local modules + sparse long-range bridges",
-      "sources": ["S3", "S1", "S2"],
-      "mechanism": "BANC: strongest effector drive is local sensorimotor loops; AN/DN circuits form behavior-centric modules; higher regions supervise. Authors analogize to subsumption, not a pheromone swarm.",
-      "software_hypothesis": "Workers subscribe to capability neighborhoods. Cross-neighborhood traffic is sparse INSIGHT/DANGER/SATURATION, not global TODO sniffing.",
-      "measurable_prediction": "On a heterogeneous failure-prone mix, local+bridge topology reduces coordination messages and duplicate claims vs a flat blackboard at matched quality. On a sequential DAG it does not beat a deterministic orchestrator on quality or wall time.",
-      "experiment_task": ["MESH-101", "MESH-103", "MESH-105"],
-      "falsification": "Central router or DAG matches or beats local+bridge on both quality and coordination cost in the heterogeneous regime.",
-      "why_analogy_may_fail": "Fly modules are embodied body-part circuits. Software neighborhoods are invented capability labels. A hardcoded subsumption stack may capture the same gain.",
-      "required_baseline": "Brooks-style subsumption / inhibit hierarchy, not only a flat queue"
-    },
+      "id": "Q1",
+      "title": "Does modular+sparse MeshyAnts beat competent simpler systems on the hypothesized win regime?",
+      "sources": ["S3", "S6"],
+      "not_a_new_primitive": "Local neighborhoods and sparse bridges are already in ARCHITECTURE.md. S3 analogizes BANC to subsumption, which is a baseline, not a MeshyAnts feature.",
+      "software_comparison": "MeshyAnts local-claim + decaying field + sparse INSIGHT/DANGER/SATURATION versus (i) capability-labeled priority queue, (ii) central load-aware router, (iii) deterministic DAG, (iv) manager-worker, (v) Brooks inhibit hierarchy.",
+      "measurable_prediction": "On a heterogeneous failure-prone mix, MeshyAnts reduces recovery time or duplicate-claim rate versus all five simpler systems at matched quality and equal budget. On a sequential DAG it loses or ties the orchestrator on quality and wall time.",
+      "operational_metrics": [
+        "task_success_rate",
+        "verified_quality",
+        "wall_time",
+        "token_or_tool_cost",
+        "duplicate_claim_count",
+        "coordination_message_count",
+        "error_amplification = colony_undetected_errors / single_worker_undetected_errors",
+        "recovery_time_after_worker_kill"
+      ],
+      "experiment_task": ["MESH-101", "MESH-103", "MESH-104", "MESH-105"],
+      "falsification": "Any of the five simpler systems matches or beats MeshyAnts on quality and coordination cost in the heterogeneous regime. Flat blackboard-only is not an adequate baseline.",
+      "why_analogy_may_fail": "BANC modules are embodied body-part circuits. Software neighborhoods are invented labels. S6 says extra agents often hurt once a single worker is capable."
+    }
+  ],
+  "experiment_design_constraints": [
     {
-      "id": "A2",
-      "title": "Bounded verify/repair recurrence",
-      "sources": ["S2"],
-      "mechanism": "FlyWire reciprocity 0.138, over-represented vs nulls; ~2/3 of neurons in at least one reciprocal pair; reciprocal edges enriched for E-I pairs.",
-      "software_hypothesis": "Topology may include a verifier then repair worker with a retry bound. Software owns the loop; no LLM decides whether to recur.",
-      "measurable_prediction": "Bounded verifier-repair lowers undetected-error rate vs one-shot workers at a measured extra cost. Unbounded recurrence raises cost without matching quality gain.",
-      "experiment_task": ["MESH-105"],
-      "falsification": "A single terminal checker matches error rate at lower cost, or the gain requires unbounded debate.",
-      "why_analogy_may_fail": "Synaptic reciprocity is millisecond local feedback, not a multi-agent review cycle."
-    },
-    {
-      "id": "A3",
-      "title": "Integrator/broadcaster as traffic, not Queens",
-      "sources": ["S2", "S9"],
-      "mechanism": "676 broadcasters and 638 integrators under an arbitrary 5x rule; 37093 rich-club neurons are balanced; rich club is ~30% of neurons; S9: rich club looks like a highway, not a controller.",
-      "software_hypothesis": "Integrator combines multi-neighborhood evidence into RESULT/INSIGHT. Broadcaster fans out high-confidence DANGER/INSIGHT. Neither assigns tasks.",
-      "measurable_prediction": "A small fixed integrator/broadcaster set reduces missed cross-module constraint failures vs modular-only, while central-assign rate stays at local-claim baseline. Ablation raises missed-constraint failures.",
-      "experiment_task": ["MESH-105"],
-      "falsification": "A global result log or manager tree matches the missed-constraint metric at equal or lower cost.",
-      "why_analogy_may_fail": "Degree imbalance is not a computational role. If integrators assign work, the run is a hidden manager."
-    },
-    {
-      "id": "A4",
-      "title": "Compositional phenotypes",
-      "sources": ["S4"],
-      "mechanism": "Shared PFC subspaces encode reusable task components and are quieted when unused.",
-      "software_hypothesis": "Phenotype = model/tool + policy + versioned skills + permissions + context strategy + budget. Unused skills stay out of context.",
-      "measurable_prediction": "On compositionally related tasks, skill reuse has lower cold-start tokens and no worse quality than overlapping role prompts. Unused-skill context inflation increases tokens without quality.",
-      "experiment_task": ["MESH-102"],
-      "falsification": "Monolithic role prompts match reuse on quality and cost.",
-      "why_analogy_may_fail": "Within-brain geometry in two monkeys is not a multi-agent role result. Compositional representations are not compositional workers."
-    },
-    {
-      "id": "A5",
-      "title": "Value-of-learning budget",
-      "sources": ["S5", "S6"],
-      "mechanism": "Humans spend more control when they expect learnability. Extra agents often hurt once a single capable worker exists.",
-      "software_hypothesis": "Extra attempts allocated by a deterministic VoL rule. LLM does not decide to try harder. Saturated easy tasks do not get more agents.",
-      "measurable_prediction": "After a cold-start capability appears, VoL hits a target success rate in fewer subsequent tasks than greedy, at higher short-run cost and lower long-run regret. On a static easy workload VoL wastes budget.",
-      "experiment_task": ["MESH-104"],
-      "falsification": "Epsilon-greedy or a central contextual bandit matches the adaptation curve at equal or lower cost.",
-      "why_analogy_may_fail": "Human deliberation time is not replica count. S5 is one perceptual task."
-    },
-    {
-      "id": "A6",
-      "title": "Defer selection; multi-objective fitness",
-      "sources": ["S8a", "S8b", "S10a", "S10b"],
-      "mechanism": "Evolutionary MAS can improve some configs but published operators are LLM judges. Strong proxy selection favors luck and Goodharts.",
-      "software_hypothesis": "No Queen / phenotype mutation until Phase A-C exist. Future fitness is a vector, never tasks/hour. No LLM evolutionary operator in the core experiment.",
-      "measurable_prediction": "Single-proxy selection before Experiment A raises throughput and lowers verified quality vs no-selection.",
-      "experiment_task": ["MESH-104", "MESH-105"],
-      "falsification": "Early single-proxy selection improves verified quality without a hidden quality leak.",
-      "why_analogy_may_fail": "Biological fitness is reproductive. Logged software fitness is whatever we choose to game."
-    },
-    {
-      "id": "A7",
-      "title": "Do-not-swarm gate",
+      "id": "C1",
+      "title": "Include a predicted lose regime and a recorded single-worker baseline",
       "sources": ["S6"],
-      "mechanism": "Equal-budget MAS: extra agents help mainly when the single-agent baseline is weak and work is parallelizable or dynamically explorative. Sequential reasoning is a lose regime. No-verifier topologies amplify errors.",
-      "software_hypothesis": "MESH-101 includes a DAG-lose regime, a heterogeneous maybe-win regime, and a recorded single-worker baseline. Strong single-worker baseline predicts MeshyAnts loss.",
-      "measurable_prediction": "MeshyAnts loses or ties the DAG regime. Any win is confined to the heterogeneous regime and survives ablation. Unverified volunteer swarms amplify errors more than the central router.",
-      "experiment_task": ["MESH-101", "MESH-103", "MESH-104"],
-      "falsification": "MeshyAnts wins universally (treat as baseline handicap) or never wins on the hypothesized regime.",
-      "why_analogy_may_fail": "S6 studies LLM conversation topologies, not a software pheromone field. Directional, not a proof about MeshyAnts."
+      "constraint": "MESH-101 must include a sequential DAG regime expected to favor manager/DAG, a heterogeneous maybe-win regime, and a single-worker baseline. If that baseline is already strong, predict MeshyAnts loss.",
+      "measurable_prediction": "The published Experiment A spec names both regimes and logs single-worker success before any multi-agent run.",
+      "leftover_vs_scheduler": "This is a contract constraint, not a runtime primitive. It prevents a handicapped baseline.",
+      "experiment_task": ["MESH-101"],
+      "falsification": "Experiment A reports only a flat-blackboard comparison or omits the single-worker number."
+    },
+    {
+      "id": "C2",
+      "title": "Subsumption / inhibit hierarchy is a required baseline",
+      "sources": ["S3"],
+      "constraint": "Bates et al. analogize BANC to Brooks-style distributed/subsumption control. MESH-103 must include that baseline, not only a flat queue.",
+      "measurable_prediction": "MESH-103 lists a subsumption-like inhibit hierarchy as a first-class baseline with the same tasks/models/tools/budget.",
+      "leftover_vs_scheduler": "Adds a baseline the scheduler critic already wanted. Does not add a MeshyAnts feature.",
+      "experiment_task": ["MESH-103"],
+      "falsification": "Phase A ships without a subsumption/inhibit baseline."
+    },
+    {
+      "id": "C3",
+      "title": "Defer selection; no LLM-as-fitness in the core experiment",
+      "sources": ["S8a", "S8b", "S10a", "S10b"],
+      "constraint": "No Queen / phenotype mutation until Phase A–C exist. Future fitness is a vector (quality, verification confidence, cost, latency, reliability), never tasks/hour. No LLM evolutionary operator in the core experiment.",
+      "measurable_prediction": "MESH-104/105 configs have selection_enabled=false. If someone later enables single-proxy selection early, verified quality is predicted to drop while throughput rises.",
+      "leftover_vs_scheduler": "A don't. The simpler system is no-selection.",
+      "experiment_task": ["MESH-104", "MESH-105"],
+      "falsification": "Core Experiment A/B runs Queen or an LLM judge as fitness."
+    },
+    {
+      "id": "C4",
+      "title": "Do not put task assignment in a rich-club / hub Queen",
+      "sources": ["S2", "S9"],
+      "constraint": "Fly rich club is ~30% of neurons; integrator/broadcaster 5× labels are arbitrary; Podschun et al. fit a highway, not a controller. Assignment stays local-claim.",
+      "measurable_prediction": "No MESH-105 topology named rich-club-controller is treated as a MeshyAnts candidate. Hub-assign, if run, is scored as a manager baseline.",
+      "leftover_vs_scheduler": "Rejects a tempting translation. Prevents a hidden manager.",
+      "experiment_task": ["MESH-105"],
+      "falsification": "A rich-club-controller topology is implemented as the MeshyAnts condition."
+    }
+  ],
+  "software_priors_neuroai_not_warrant": [
+    {
+      "id": "P1",
+      "was": "A2",
+      "title": "Bounded verify/repair",
+      "already_expressed_by": "deterministic DAG with a check step; manager-worker with retry bound",
+      "sources_corroborative_only": ["S2"],
+      "why_not_adopted_as_neuroai": "Fly reciprocity is millisecond E-I feedback. The leftover test (terminal checker vs bounded recurrence) does not isolate biology."
+    },
+    {
+      "id": "P2",
+      "was": "A3",
+      "title": "Join + fan-out traffic",
+      "already_expressed_by": "DAG reduce node; pub/sub topic; global result log",
+      "sources_corroborative_only": ["S2"],
+      "why_not_adopted_as_neuroai": "Degree-imbalance labels are arbitrary. If a join node assigns work it is a manager."
+    },
+    {
+      "id": "P3",
+      "was": "A4",
+      "title": "Versioned composable skills",
+      "already_expressed_by": "ARCHITECTURE.md phenotype; prompt assembly that omits unused skills",
+      "sources_corroborative_only": ["S4"],
+      "why_not_adopted_as_neuroai": "S4 is two-monkey PFC geometry, not a multi-agent org chart."
+    },
+    {
+      "id": "P4",
+      "was": "A5",
+      "title": "Exploration / value-of-learning budget",
+      "already_expressed_by": "central contextual bandit; ε-greedy; priority boost on uncertain high-payoff work",
+      "sources_corroborative_only": ["S5", "S6"],
+      "why_not_adopted_as_neuroai": "Human deliberation time is not replica count. The watch's own falsifier was a central bandit."
     }
   ],
   "rejected_translations": [
@@ -92,12 +113,12 @@
     {
       "id": "R2",
       "title": "Rich-club Queen / hub assigns tasks",
-      "reason": "S2 rich club is ~30% of neurons; S9 highway result. Assignment stays local-claim."
+      "reason": "S2 rich club is ~30% of neurons; S9 highway result."
     },
     {
       "id": "R3",
       "title": "Integrator/broadcaster LLM personas",
-      "reason": "Violates Rule 1: software does coordination."
+      "reason": "Violates Rule 1."
     },
     {
       "id": "R4",
@@ -107,17 +128,17 @@
     {
       "id": "R5",
       "title": "BIGMAS global workspace + Orchestrator as MeshyAnts",
-      "reason": "That is a manager-worker system."
+      "reason": "Manager-worker with extra branding."
     },
     {
       "id": "R6",
       "title": "Fly neuropils as packages",
-      "reason": "Hard-coded biology is not an ablatable topology config."
+      "reason": "Not an ablatable topology config."
     },
     {
       "id": "R7",
       "title": "Pheromone without decay or local heuristic",
-      "reason": "ACO beta->0 collapse; digital traces without decay are litter."
+      "reason": "ACO beta->0 collapse; traces without decay are litter."
     },
     {
       "id": "R8",
@@ -132,17 +153,17 @@
     {
       "id": "R10",
       "title": "LLM-as-fitness evolution in core experiment",
-      "reason": "S8 operator + S10 Goodhart."
+      "reason": "S8b operator + S10 Goodhart."
     },
     {
       "id": "R11",
       "title": "Global field sniffing",
-      "reason": "O(workers x events); MESH-106 reject condition."
+      "reason": "O(workers x events)."
     },
     {
       "id": "R12",
       "title": "Function inferred from wiring alone",
-      "reason": "Structure-function gap. Connectomes constrain flows; they do not prove a scheduler."
+      "reason": "Connectomes constrain flows; they do not prove a scheduler."
     }
   ]
 }

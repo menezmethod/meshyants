@@ -1,0 +1,74 @@
+{
+  "task_id": "MESH-107",
+  "round": 1,
+  "hypothesis": "NeuroAI can supply testable mechanisms, but biological analogy should only enter MeshyAnts when converted into a falsifiable software experiment.",
+  "falsification_condition": "An adopted idea has no measurable prediction, treats a podcast as evidence, or is already implied by a simpler scheduler with no leftover test.",
+  "implementation_config_sha": "4d0f21a3d9e576618c869f35be5fb3fde3f6d043",
+  "benchmark_inputs": {
+    "kind": "literature_watch",
+    "sources_file": "docs/results/MESH-107/sources.json",
+    "map_file": "docs/results/MESH-107/mechanism-map.json",
+    "notes": "docs/revival/NEUROAI_WATCH.md",
+    "random_seeds": []
+  },
+  "scorecard": {
+    "scientific_validity": 2,
+    "simpler_baseline_advantage": 0,
+    "performance_cost": 2,
+    "resilience_scalability": 1,
+    "code_experiment_quality": 3,
+    "total": 8,
+    "max": 25
+  },
+  "evaluator_verdicts": {
+    "scientific_skeptic": {
+      "verdict": "PASS WITH RISKS",
+      "scientific_validity": 2,
+      "strongest_objection": "A2/A4/A3 are software patterns with a DOI attached; verification is URL liveness, not claim binding."
+    },
+    "scheduler_critic": {
+      "verdict": "REJECT",
+      "simpler_baseline_advantage": 0,
+      "strongest_objection": "A1–A7 are expressible as labeled queue, router, DAG, manager, or Brooks subsumption. No leftover primitive."
+    },
+    "performance_critic": {
+      "verdict": "NOT APPLICABLE",
+      "note": "No runtime system was claimed. Watch cost is one literature pass plus HTTP checks."
+    },
+    "failure_critic": {
+      "verdict": "NOT APPLICABLE",
+      "note": "No leases, workers, or external effects in this slice."
+    },
+    "slop_evaluator": {
+      "verdict": "PASS WITH RISKS",
+      "code_experiment_quality": 3,
+      "strongest_objection": "verification.json PASS is schema+HTTP; S9/S10a/S8b authors were wrong."
+    }
+  },
+  "baseline_results": {
+    "simpler_systems_tested": [
+      "priority queue + capability labels",
+      "central load-aware router",
+      "deterministic DAG",
+      "manager-worker",
+      "Brooks subsumption / inhibit hierarchy"
+    ],
+    "outcome": "Critic judges all adopted ideas already expressible by those systems. Flat blackboard is a handicapped baseline."
+  },
+  "cost_latency_model_calls": {
+    "model_calls_for_coordination": 0,
+    "citation_http_checks": 13,
+    "citation_http_ok_including_403": 13,
+    "note": "S5 and S9 returned 403 and were counted ok. That check is not a paper-read."
+  },
+  "strongest_objection": "NeuroAI did not name a coordination primitive a simpler scheduler cannot already express. Author errors (S9 Karakoc; S10a Karalis; S8b Amazon Science) show the source ledger was not bound to Crossref/arXiv metadata.",
+  "previous_round_delta": {
+    "prior_round": null,
+    "delta_total": null,
+    "regressions": []
+  },
+  "decision": "revise",
+  "next_action": "Demote A2–A5 from adopted NeuroAI mechanisms to software priors; keep A1 vs subsumption as the only leftover empirical question; treat A6/A7 as experiment-design constraints; fix authors; replace URL-ok with Crossref/arXiv claim binding.",
+  "stop_condition": null,
+  "target_challenge": "MESH-107 success_criteria (name a prediction) are too cheap. The load-bearing bar is leftover isolation vs simpler schedulers."
+}
