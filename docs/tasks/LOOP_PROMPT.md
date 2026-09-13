@@ -17,13 +17,43 @@ Your goal is **not to build another shiny agent framework**. Your goal is to dis
 ## Execute one loop
 
 1. **Select:** choose the highest-priority unblocked task that advances an experiment.
-2. **Frame:** state the claim, strongest simpler alternative, missing evidence, and falsification condition.
+2. **Frame:** state the claim, strongest simpler alternative, missing evidence, falsification condition, and current target score.
 3. **Act:** implement/research the smallest useful slice. Reuse existing v1 substrate before adding infrastructure.
-4. **Measure:** run tests plus the relevant benchmark/performance/failure experiments. Save machine-readable evidence where possible.
-5. **Attack:** run independent evaluator passes from `EVALUATORS.md`. The scheduler critic must actively try to show that a simpler system explains the result.
-6. **Decide:** keep, revise, or reject the approach based on evidence—not sunk cost.
-7. **Record:** update docs/results and `tasks.json`. New discoveries may create tasks. Unsupported ideas stay hypotheses.
-8. **Repeat:** continue only while there is a clear unblocked next task and the previous step has evidence.
+4. **Measure:** run tests plus relevant benchmark/performance/failure experiments. Save machine-readable evidence.
+5. **Judge:** use fresh-context evaluators from `EVALUATORS.md`. Give them evidence, current result, previous round score/verdict, and the hypothesis — not the builder's persuasive rationale.
+6. **Compare:** score the round against the previous round. Regressions count even when tests still pass.
+7. **Decide:** keep, revise, rethink architecture, or reject based on evidence—not sunk cost.
+8. **Record:** write the round result and update `tasks.json`. New discoveries may create tasks. Unsupported ideas stay hypotheses.
+9. **Repeat:** continue only while there is a clear unblocked next action and the loop is still improving.
+
+## Round record
+
+For material work, persist a compact round record under `docs/results/<task-id>/round-N.json` when practical:
+
+- hypothesis / falsification condition
+- implementation/config SHA
+- benchmark inputs + random seed(s)
+- scorecard + evaluator verdicts
+- baseline results
+- cost / latency / model calls
+- strongest objection
+- previous-round delta
+- next action
+
+The record exists so another agent can reproduce the decision without inheriting the builder's narrative.
+
+## Convergence rules
+
+Default to **3 build → measure → judge rounds** before mandatory reassessment.
+
+- **SUCCESS:** target criteria are met, relevant evaluators pass, and any claimed MeshyAnts advantage survives a credible baseline/ablation.
+- **REGRESSION:** score or a hard metric worsens. Fix/revert or explicitly justify the tradeoff before continuing.
+- **STALL APPROACHING:** total score improves by <2 points across 2 rounds, or the same material blocker appears twice. Stop incremental tweaking and reconsider the architecture/experiment.
+- **STALLED:** one deliberate architectural rethink fails to improve the result. Stop the loop; record the finding rather than burning more tokens.
+- **FALSIFIED:** a simpler system matches/beats the claimed advantage or the mechanism fails its ablation. Mark the claim rejected/revise the hypothesis.
+- **BUDGET STOP:** stop when the task's compute/time budget is reached unless the next round has a specific, evidence-backed reason to be worth the cost.
+
+The target itself is challengeable. An evaluator may conclude that the metric, benchmark, hypothesis, or experiment is wrong.
 
 ## Research loop
 
@@ -56,6 +86,7 @@ Stop and create a finding/task instead of coding when:
 - metrics are missing;
 - the task requires inventing unapproved architecture;
 - evaluators reject the result;
-- the biological analogy has no measurable software prediction.
+- the biological analogy has no measurable software prediction;
+- the loop is stalled or budget-exhausted.
 
 Negative results are progress.
