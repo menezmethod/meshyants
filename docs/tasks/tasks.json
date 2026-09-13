@@ -218,7 +218,7 @@
       "workstream": "quality",
       "type": "continuous_gate",
       "priority": 1,
-      "status": "ready",
+      "status": "in_progress",
       "depends_on": [],
       "hypothesis": "Independent adversarial evaluation will prevent us from mistaking complexity, benchmark leakage, or attractive demos for progress.",
       "deliverables": [
@@ -235,6 +235,13 @@
       ],
       "evidence_required": [
         "evaluation reports attached to material changes"
+      ],
+      "evidence": [
+        "internal/evalgate/",
+        "cmd/evalgate/",
+        "docs/tasks/eval-report.schema.json",
+        "docs/tasks/evaluators/",
+        "docs/results/MESH-108/"
       ]
     },
     {

@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "task_id": "MESH-DEMO",
+  "hypothesis": "More agents produce higher quality without a baseline.",
+  "falsification_condition": "A single worker or manager-worker matches quality at equal budget.",
+  "round": 1,
+  "composite_verdict": "REJECT",
+  "scorecard": {
+    "scientific_validity": 1,
+    "simpler_baseline_advantage": 0,
+    "performance_cost": 1,
+    "resilience_scalability": 1,
+    "code_experiment_quality": 1
+  },
+  "baseline_results": "none recorded",
+  "cost_latency_model_calls": "unknown",
+  "evaluators": [
+    {
+      "id": "scientific_skeptic",
+      "verdict": "REJECT",
+      "evidence": [
+        "The run reports success rate only for the swarm condition; the single-worker cell is missing."
+      ],
+      "strongest_objection": "The result cannot support a coordination-advantage claim.",
+      "strongest_simpler_explanation": "A single competent worker would likely match this quality on the same DAG-shaped workload.",
+      "repeated_blocker": false,
+      "target_challenge": "The hypothesis treats agent count as a quality proxy.",
+      "next_experiment": "Re-run with an equal-budget single-worker and manager-worker baseline.",
+      "what_would_reverse_conclusion": "A pre-registered equal-budget baseline that the swarm beats on a named metric.",
+      "findings": [
+        {
+          "severity": "reject",
+          "summary": "Missing equal-budget baseline",
+          "evidence": "Only the swarm cell was measured.",
+          "proposed_task": {
+            "title": "Add equal-budget single-worker baseline to the claimed run",
+            "workstream": "science",
+            "type": "experiment",
+            "hypothesis": "The swarm advantage disappears under an equal-budget single worker.",
+            "falsification_condition": "Swarm still wins after the baseline is run with the same models, tools, and token budget."
+          }
+        }
+      ]
+    },
+    {
+      "id": "scheduler_critic",
+      "verdict": "REJECT",
+      "evidence": [
+        "Workload is a write-then-finalize DAG; a deterministic workflow explains the same trace."
+      ],
+      "strongest_objection": "Apparent emergence is a hidden linear pipeline.",
+      "strongest_simpler_explanation": "A deterministic DAG/workflow with two stages produces the same artifacts.",
+      "repeated_blocker": false,
+      "target_challenge": "yes — swarm success on a DAG is the wrong benchmark",
+      "next_experiment": "Move the claim to a heterogeneous, failure-prone workload or drop it.",
+      "simpler_system": "deterministic_dag",
+      "simpler_system_outcome": "wins"
+    },
+    {
+      "id": "performance_critic",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "Token spend was not reported; wall time was 4x a single worker in the author notes."
+      ],
+      "strongest_objection": "Coordination cost is unmeasured.",
+      "strongest_simpler_explanation": "Run the single worker once and stop.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Record tokens, wall time, and duplicate-work counts.",
+      "measurements": {
+        "wall_time": "unreported",
+        "tokens": "unreported"
+      }
+    },
+    {
+      "id": "failure_critic",
+      "verdict": "REJECT",
+      "evidence": [
+        "No worker-kill, lease expiry, or duplicate-claim trial was run."
+      ],
+      "strongest_objection": "Resilience is an untested story.",
+      "strongest_simpler_explanation": "A manager that retries a failed worker explains recovery equally well.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Kill the lead worker mid-run and compare recovery time to manager-worker.",
+      "perturbations_considered": [
+        "none_executed"
+      ]
+    },
+    {
+      "id": "slop_evaluator",
+      "verdict": "PASS WITH RISKS",
+      "evidence": [
+        "Demo script hard-codes the happy path and names it emergent."
+      ],
+      "strongest_objection": "The word emergent is used without an ablation.",
+      "strongest_simpler_explanation": "Delete the swarm wrapper and keep the two-step script.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Ablate the field/pheromone layer and show a metric change.",
+      "invariant_named": "Do not call a behavior emergent without a public baseline and an ablation.",
+      "deletion_candidate": "The swarm wrapper around the DAG."
+    }
+  ]
+}

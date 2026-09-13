@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "task_id": "MESH-108",
+  "hypothesis": "A machine-checked gauntlet rejects rubber-stamp reviews and spawns tasks from negatives.",
+  "falsification_condition": "A vacuous PASS advances, or a REJECT fails to block done, or a negative finding produces no draft.",
+  "round": 1,
+  "composite_verdict": "PASS",
+  "scorecard": {
+    "scientific_validity": 3,
+    "simpler_baseline_advantage": 3,
+    "performance_cost": 3,
+    "resilience_scalability": 2,
+    "code_experiment_quality": 3
+  },
+  "baseline_results": "checklist_only accepted the rubber-stamp fixture; evalgate rejected it",
+  "cost_latency_model_calls": "gate decide <1ms; 0 model calls",
+  "evaluators": [
+    {
+      "id": "scientific_skeptic",
+      "verdict": "PASS",
+      "evidence": [
+        "testdata/rubber_stamp.json is rejected by Validate; testdata/valid_reject.json blocks TaskMayBecomeDone"
+      ],
+      "strongest_objection": "Structural checks can be satisfied with fluent but empty prose if someone tries.",
+      "strongest_simpler_explanation": "A careful human reading EVALUATORS.md would also reject rubber stamps.",
+      "repeated_blocker": false,
+      "target_challenge": "The hypothesis may overclaim: schema enforcement is not independent scientific judgment.",
+      "next_experiment": "Feed a fluent-but-empty report that fills every required field and see if it still advances.",
+      "what_would_reverse_conclusion": "A rubber-stamp or missing-simpler-explanation report that Decide allows to advance."
+    },
+    {
+      "id": "scheduler_critic",
+      "verdict": "PASS",
+      "evidence": [
+        "ChecklistOnlyAccepts returns true for the same rubber-stamp text that evalgate rejects."
+      ],
+      "strongest_objection": "A JSON Schema plus a 50-line validator could encode the same reject/spawn rules.",
+      "strongest_simpler_explanation": "Required fields on round-N.json plus a schema file, without a Go package.",
+      "repeated_blocker": false,
+      "target_challenge": "no — the target is a process gate, not a colony benchmark",
+      "next_experiment": "Compare loc and false-negative rate against a schema-only checker.",
+      "simpler_system": "checklist_or_schema",
+      "simpler_system_outcome": "loses"
+    },
+    {
+      "id": "performance_critic",
+      "verdict": "PASS",
+      "evidence": [
+        "Decide on the valid fixture is a pure CPU JSON walk; measured in TestGate_DecideLatency."
+      ],
+      "strongest_objection": "No production CI hook yet, so the gate can be skipped by not invoking it.",
+      "strongest_simpler_explanation": "Document the checklist and do not spend compile time on a gate binary.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Add an optional CI step that validates docs/results/**/eval-report.json when present.",
+      "measurements": {
+        "decide_ns_budget": "5000000",
+        "model_calls": "0"
+      }
+    },
+    {
+      "id": "failure_critic",
+      "verdict": "PASS",
+      "evidence": [
+        "DecodeReport rejects oversized payloads; malformed JSON returns ErrInvalidReport; nil report does not panic."
+      ],
+      "strongest_objection": "There is no lease/fencing surface here; this is a file-shaped report, not a worker protocol.",
+      "strongest_simpler_explanation": "os.ReadFile plus json.Unmarshal without size bounds would be the naive parser.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Replay a truncated and a duplicate-evaluator report.",
+      "perturbations_considered": [
+        "oversized_json",
+        "malformed_json",
+        "nil_report",
+        "duplicate_evaluator",
+        "stale_schema_version"
+      ]
+    },
+    {
+      "id": "slop_evaluator",
+      "verdict": "PASS",
+      "evidence": [
+        "Tests are named as scenarios (rubber stamp, buried finding, handicapped baseline) rather than field-by-field mirrors."
+      ],
+      "strongest_objection": "cmd/evalgate could be deleted; go test is enough to exercise the package.",
+      "strongest_simpler_explanation": "Keep only the package and schema; drop the CLI until an agent actually invokes it.",
+      "repeated_blocker": false,
+      "target_challenge": "no",
+      "next_experiment": "Delete the CLI if the next round shows no caller.",
+      "invariant_named": "REJECT or reject-severity findings must not allow status=done; risk/reject findings must propose a task.",
+      "deletion_candidate": "cmd/evalgate is convenience only; the package is the gate."
+    }
+  ]
+}
