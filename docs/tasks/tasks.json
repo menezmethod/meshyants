@@ -186,10 +186,11 @@
       "workstream": "neuroai",
       "type": "research_loop",
       "priority": 2,
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [],
       "cadence": "run when the project reaches a design fork, after a major experiment, or when notable NeuroAI/connectomics work appears; do not churn weekly for no reason",
       "hypothesis": "NeuroAI can supply testable mechanisms, but biological analogy should only enter MeshyAnts when converted into a falsifiable software experiment.",
+      "hypothesis_revised": "This cycle supplied experiment-design constraints and rejected translations, not a new coordination primitive. Leftover test is Experiment A vs queue/router/DAG/manager/subsumption.",
       "sources": [
         "FlyWire/connectomics",
         "Princeton Natural & Artificial Minds / Princeton Neuroscience Institute",
@@ -210,7 +211,24 @@
       "evidence_required": [
         "primary sources",
         "contradictory evidence search"
-      ]
+      ],
+      "evidence": {
+        "notes": "docs/revival/NEUROAI_WATCH.md",
+        "map": "docs/results/MESH-107/mechanism-map.json",
+        "sources": "docs/results/MESH-107/sources.json",
+        "rounds": [
+          "docs/results/MESH-107/round-1.json",
+          "docs/results/MESH-107/round-2.json"
+        ],
+        "verification": "docs/results/MESH-107/verification.json",
+        "stop_condition": "STALL APPROACHING",
+        "scorecard": {"round_1_total": 8, "round_2_total": 10, "max": 25},
+        "limitations": [
+          "No leftover runtime primitive vs queue/router/DAG/manager/subsumption.",
+          "verification.json is Crossref-for-DOI; arXiv S8a/S8b/S10a/S10b not live-bound; verify_sources.py was not rewritten (thrash hard-stop).",
+          "C1/C2 are advice for MESH-101/103 and were not written into those task entries."
+        ]
+      }
     },
     {
       "id": "MESH-108",
