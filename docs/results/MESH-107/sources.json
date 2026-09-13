@@ -1,0 +1,191 @@
+{
+  "task_id": "MESH-107",
+  "retrieved_utc": "2026-09-13",
+  "note": "Primary sources for this watch cycle. Press and podcasts are not listed as evidence.",
+  "sources": [
+    {
+      "id": "S1",
+      "kind": "primary",
+      "adopted_as": "dataset",
+      "title": "Neuronal wiring diagram of an adult brain",
+      "authors": "Dorkenwald, Matsliah, Sterling, Schlegel, Yu, McKellar et al. (FlyWire Consortium); Seung, Murthy",
+      "venue": "Nature 634:124-138",
+      "year": 2024,
+      "doi": "10.1038/s41586-024-07558-y",
+      "url": "https://doi.org/10.1038/s41586-024-07558-y",
+      "claim_used": "FlyWire whole-brain reconstruction exists (139255 neurons, ~5e7 synapses). Wiring is a resource, not a coordination proof."
+    },
+    {
+      "id": "S2",
+      "kind": "primary",
+      "adopted_as": "A2,A3",
+      "title": "Network statistics of the whole-brain connectome of Drosophila",
+      "authors": "Lin, Yang, Dorkenwald, Matsliah, Sterling, Schlegel et al.",
+      "venue": "Nature",
+      "year": 2024,
+      "doi": "10.1038/s41586-024-07968-y",
+      "url": "https://doi.org/10.1038/s41586-024-07968-y",
+      "claim_used": "Rich-club ~30% of neurons (degree cutoff 37); 676 broadcasters and 638 integrators under an arbitrary 5x in/out rule; reciprocity 0.138; mean directed path 4.42 in giant SCC; NPC null model accounts for rich-club excess via interneuropil connections."
+    },
+    {
+      "id": "S3",
+      "kind": "primary",
+      "adopted_as": "A1",
+      "title": "Distributed control circuits across a brain-and-cord connectome",
+      "authors": "Bates, Phelps, Kim, Yang et al.",
+      "venue": "Nature",
+      "year": 2026,
+      "published": "2026-06-08",
+      "doi": "10.1038/s41586-026-10735-w",
+      "url": "https://doi.org/10.1038/s41586-026-10735-w",
+      "claim_used": "Local sensor-effector loops dominate; AN/DN long-range circuits form behavior-centric modules; higher regions supervise; authors analogize to subsumption / distributed robotic control."
+    },
+    {
+      "id": "S4",
+      "kind": "primary",
+      "adopted_as": "A4",
+      "title": "Building compositional tasks with shared neural subspaces",
+      "authors": "Tafazoli, Bouchacourt, Ardalan, Markov, Uchimura, Mattar, Daw, Buschman",
+      "venue": "Nature",
+      "year": 2025,
+      "published": "2025-11-26",
+      "doi": "10.1038/s41586-025-09805-2",
+      "url": "https://doi.org/10.1038/s41586-025-09805-2",
+      "claim_used": "Macaque PFC reuses shared subspaces across compositionally related tasks and quiets unused ones. Press name Cognitive Legos is not a source."
+    },
+    {
+      "id": "S5",
+      "kind": "primary",
+      "adopted_as": "A5",
+      "title": "Learning expectations shape cognitive control allocation",
+      "authors": "Masís, Musslick, Cohen",
+      "venue": "Proceedings of the National Academy of Sciences",
+      "year": 2025,
+      "doi": "10.1073/pnas.2416720122",
+      "url": "https://doi.org/10.1073/pnas.2416720122",
+      "claim_used": "Humans allocate more cognitive control when they expect a task to be learnable, forgoing short-run reward."
+    },
+    {
+      "id": "S6",
+      "kind": "primary",
+      "adopted_as": "A7",
+      "title": "Capable language models can outgrow the benefits of collaboration",
+      "authors": "Kim, Gu, Park, Park, Schmidgall, Heydari et al.",
+      "venue": "Nature Machine Intelligence 8:1157-1172",
+      "year": 2026,
+      "published": "2026-07-24",
+      "doi": "10.1038/s42256-026-01268-y",
+      "url": "https://doi.org/10.1038/s42256-026-01268-y",
+      "claim_used": "Equal-budget MAS study: single-agent baseline predicts whether extra agents help; ~45% capability-saturation selection rule; sequential MAS regressions 39-70%; independent error amplification 17.2x vs centralized 4.4x."
+    },
+    {
+      "id": "S7",
+      "kind": "primary",
+      "adopted_as": "reject",
+      "title": "A brain-inspired agentic architecture to improve planning with LLMs",
+      "authors": "Webb, Mondal, Momennejad",
+      "venue": "Nature Communications 16:8633",
+      "year": 2025,
+      "doi": "10.1038/s41467-025-63804-5",
+      "url": "https://doi.org/10.1038/s41467-025-63804-5",
+      "claim_used": "MAP implements PFC-inspired functions as LLM prompt modules plus orchestration. Negative example: cognition spent on coordination."
+    },
+    {
+      "id": "S8a",
+      "kind": "primary",
+      "adopted_as": "A6-defer",
+      "title": "EvoAgent: Towards Automatic Multi-Agent Generation via Evolutionary Algorithms",
+      "authors": "Yuan et al.",
+      "venue": "arXiv",
+      "year": 2024,
+      "arxiv": "2406.14228",
+      "url": "https://arxiv.org/abs/2406.14228",
+      "claim_used": "MAS configurations can be mutated/crossed. Not a warrant to run Queen now."
+    },
+    {
+      "id": "S8b",
+      "kind": "primary",
+      "adopted_as": "A6-defer",
+      "title": "EvoMAS: Evolutionary Generation of Multi-Agent Systems",
+      "authors": "Amazon Science",
+      "venue": "arXiv / ICML 2026",
+      "year": 2026,
+      "arxiv": "2602.06511",
+      "url": "https://arxiv.org/abs/2602.06511",
+      "claim_used": "Evolves topology/prompts/tools with an LLM meta-model and LLM-judge reward. Do not copy the operator into MeshyAnts core experiments."
+    },
+    {
+      "id": "S9",
+      "kind": "primary",
+      "adopted_as": "contradiction-A3",
+      "title": "Exploring the Role of the Rich Club in Network Control of Neurocognitive States",
+      "authors": "Karakoc et al.",
+      "venue": "Human Brain Mapping",
+      "year": 2026,
+      "doi": "10.1002/hbm.70485",
+      "url": "https://doi.org/10.1002/hbm.70485",
+      "claim_used": "Prohibiting peripheral controllers hurts more than prohibiting the rich club. Rich club fits a passive data-highway role, not a control center."
+    },
+    {
+      "id": "S10a",
+      "kind": "primary",
+      "adopted_as": "A6",
+      "title": "Selection of the fittest or selection of the luckiest: the emergence of Goodhart's law in evolution",
+      "authors": "Karalis, Slijepcevic et al.",
+      "venue": "arXiv",
+      "year": 2025,
+      "arxiv": "2503.21849",
+      "url": "https://arxiv.org/abs/2503.21849",
+      "claim_used": "Too-strong selection on a noisy phenotypic proxy favors luck over heritable fitness."
+    },
+    {
+      "id": "S10b",
+      "kind": "primary",
+      "adopted_as": "A6",
+      "title": "Goodhart's Law in Reinforcement Learning",
+      "authors": "Karwowski, Hayman et al.",
+      "venue": "ICLR",
+      "year": 2024,
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/6ad68a54eaa8f9bf6ac698b02ec05048-Paper-Conference.pdf",
+      "claim_used": "Optimising an imperfect proxy past a point decreases true objective. Relevant to Queen fitness design."
+    },
+    {
+      "id": "S11",
+      "kind": "classic",
+      "adopted_as": "what-not-to-copy",
+      "title": "Ant Colony Optimization",
+      "authors": "Dorigo, Stützle",
+      "venue": "MIT Press",
+      "year": 2004,
+      "url": "https://mitpress.mit.edu/9780262042192/ant-colony-optimization/",
+      "claim_used": "Pheromone trace without a local heuristic (beta->0) collapses. Decay is a design invariant, not flavor."
+    }
+  ],
+  "rejected_as_evidence": [
+    {
+      "kind": "press",
+      "title": "Cognitive Legos help the brain build complex behaviors",
+      "reason": "Princeton/EurekAlert press name for S4. Lead only."
+    },
+    {
+      "kind": "podcast",
+      "title": "Brain Inspired interviews/transcripts",
+      "reason": "Listed on the task as a discovery source. No claim in this watch rests on a transcript."
+    },
+    {
+      "kind": "agenda",
+      "title": "Allen Institute NeuroAI 2026 (multi-area interactions)",
+      "reason": "Meeting theme, not a result."
+    },
+    {
+      "kind": "software-not-neuro",
+      "title": "BIGMAS (arXiv:2603.15371)",
+      "reason": "Central workspace + Orchestrator. Rejected as a MeshyAnts pattern."
+    },
+    {
+      "kind": "software-not-neuro",
+      "title": "DeLM (arXiv:2606.10662)",
+      "reason": "Interesting decentralized MAS lead; not NeuroAI evidence."
+    }
+  ]
+}

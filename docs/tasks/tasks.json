@@ -186,7 +186,7 @@
       "workstream": "neuroai",
       "type": "research_loop",
       "priority": 2,
-      "status": "ready",
+      "status": "in_progress",
       "depends_on": [],
       "cadence": "run when the project reaches a design fork, after a major experiment, or when notable NeuroAI/connectomics work appears; do not churn weekly for no reason",
       "hypothesis": "NeuroAI can supply testable mechanisms, but biological analogy should only enter MeshyAnts when converted into a falsifiable software experiment.",

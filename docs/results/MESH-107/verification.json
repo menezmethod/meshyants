@@ -1,0 +1,105 @@
+{
+  "task_id": "MESH-107",
+  "sources_checked": 13,
+  "sources_ok": 13,
+  "map_errors": [],
+  "adopted_count": 7,
+  "rejected_translation_count": 12,
+  "rejected_as_evidence_count": 5,
+  "podcast_used_as_evidence": false,
+  "fetches": [
+    {
+      "url": "https://doi.org/10.1038/s41586-024-07558-y",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://www.nature.com/articles/s41586-024-07558-y?error=cookies_not_supported&code=e2fe2b4a-06fd-44e5-8bc8-6215d68e243d",
+      "id": "S1"
+    },
+    {
+      "url": "https://doi.org/10.1038/s41586-024-07968-y",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://www.nature.com/articles/s41586-024-07968-y?error=cookies_not_supported&code=907958f9-ef3c-4ca4-9c39-52f618a22cdc",
+      "id": "S2"
+    },
+    {
+      "url": "https://doi.org/10.1038/s41586-026-10735-w",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://www.nature.com/articles/s41586-026-10735-w?error=cookies_not_supported&code=e05faec1-ce23-443b-8f08-be53b755b85d",
+      "id": "S3"
+    },
+    {
+      "url": "https://doi.org/10.1038/s41586-025-09805-2",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://www.nature.com/articles/s41586-025-09805-2?error=cookies_not_supported&code=9306f32a-4dbe-4e4b-8b66-a2d2a4be590b",
+      "id": "S4"
+    },
+    {
+      "url": "https://doi.org/10.1073/pnas.2416720122",
+      "ok": true,
+      "status": 403,
+      "final_url": "https://pnas.org/doi/10.1073/pnas.2416720122",
+      "note": "http_error_treated_as_identifier_exists",
+      "id": "S5"
+    },
+    {
+      "url": "https://doi.org/10.1038/s42256-026-01268-y",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://www.nature.com/articles/s42256-026-01268-y?error=cookies_not_supported&code=fcc82e76-55a1-4016-aa57-160017d83d49",
+      "id": "S6"
+    },
+    {
+      "url": "https://doi.org/10.1038/s41467-025-63804-5",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://www.nature.com/articles/s41467-025-63804-5?error=cookies_not_supported&code=90814ccc-22f5-470c-ab8c-09a599bf33d0",
+      "id": "S7"
+    },
+    {
+      "url": "https://arxiv.org/abs/2406.14228",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://arxiv.org/abs/2406.14228",
+      "id": "S8a"
+    },
+    {
+      "url": "https://arxiv.org/abs/2602.06511",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://arxiv.org/abs/2602.06511",
+      "id": "S8b"
+    },
+    {
+      "url": "https://doi.org/10.1002/hbm.70485",
+      "ok": true,
+      "status": 403,
+      "final_url": "https://onlinelibrary.wiley.com/doi/10.1002/hbm.70485",
+      "note": "http_error_treated_as_identifier_exists",
+      "id": "S9"
+    },
+    {
+      "url": "https://arxiv.org/abs/2503.21849",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://arxiv.org/abs/2503.21849",
+      "id": "S10a"
+    },
+    {
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/6ad68a54eaa8f9bf6ac698b02ec05048-Paper-Conference.pdf",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/6ad68a54eaa8f9bf6ac698b02ec05048-Paper-Conference.pdf",
+      "id": "S10b"
+    },
+    {
+      "url": "https://mitpress.mit.edu/9780262042192/ant-colony-optimization/",
+      "ok": true,
+      "status": 200,
+      "final_url": "https://mitpress.mit.edu/9780262042192/ant-colony-optimization/",
+      "id": "S11"
+    }
+  ]
+}
