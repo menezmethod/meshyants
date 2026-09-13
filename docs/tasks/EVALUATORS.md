@@ -1,6 +1,31 @@
 # Evaluator Gauntlet
 
-Material work does not advance only because tests pass. Use independent evaluator passes.
+Material work does not advance only because tests pass.
+
+## Evaluation protocol
+
+Use a **fresh context** for each material evaluator round when practical. The judge should receive:
+- the hypothesis and falsification condition
+- current evidence/artifacts
+- baseline results
+- previous round's score/verdict
+- relevant constraints/budget
+
+Do **not** preload the builder's chain of reasoning or advocacy. The evaluator should be able to disagree with the target itself.
+
+## Stable scorecard
+
+Score each dimension 0–5. Keep the rubric stable across rounds.
+
+| Dimension | 0 | 5 |
+|---|---|---|
+| Scientific validity | unsupported / confounded | strong evidence, falsifiable, repeatable |
+| Advantage over simpler baseline | no advantage | clear, reproducible meaningful advantage |
+| Performance / cost | wasteful / unknown | measured and competitive |
+| Resilience / scalability | brittle / unmeasured | survives relevant perturbations and scales credibly |
+| Code / experiment quality | slop / irreproducible | minimal, clear, tested, reproducible |
+
+**Total: 0–25.** Never hide a weak dimension behind a strong total.
 
 ## 1. Scientific skeptic
 
@@ -11,7 +36,7 @@ Ask:
 - Would this survive repeated runs / seeds?
 - What evidence would reverse the conclusion?
 
-**Can reject:** unsupported research claims or benchmark conclusions.
+**Can reject:** unsupported research claims, bad metrics, wrong experiments, or benchmark conclusions.
 
 ## 2. Scheduler critic
 
@@ -23,7 +48,7 @@ Try to reproduce the gain with:
 - deterministic DAG/workflow
 - manager → worker orchestration
 
-If the simpler system wins, record that result.
+If the simpler system wins or ties within noise/cost, record that result.
 
 ## 3. Performance/scalability critic
 
@@ -51,12 +76,16 @@ Reject:
 
 Prefer deletion over architecture that has not earned its existence.
 
-## Output format
+## Round verdict
 
-Each evaluator returns only:
+Return:
 - **Verdict:** PASS / PASS WITH RISKS / REJECT
+- **Score:** each dimension + total /25
+- **Delta:** change from prior round, with regressions called out
 - **Evidence:** concrete observations
 - **Strongest objection**
-- **Next experiment/fix**
+- **Repeated blocker:** yes/no + what
+- **Target challenge:** is the hypothesis/metric/benchmark itself wrong?
+- **Next experiment/fix:** one highest-value next move
 
-No evaluator may approve based on aesthetics or novelty.
+No evaluator may approve based on aesthetics, novelty, or amount of code.

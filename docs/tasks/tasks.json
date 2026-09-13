@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "purpose": "Research-first build queue for MeshyAnts. Every implementation task must produce evidence, survive critique, and compare against a simpler baseline.",
   "statuses": [
     "backlog",
@@ -12,8 +12,10 @@
   "global_done_gate": [
     "tests/evals pass",
     "baseline comparison exists",
-    "skeptic review completed",
+    "fresh-context skeptic review completed",
+    "stable scorecard recorded with no unexplained regression",
     "performance/cost measured when relevant",
+    "stall/falsification rules checked",
     "result and limitations documented"
   ],
   "tasks": [
@@ -321,5 +323,20 @@
         "limitations"
       ]
     }
-  ]
+  ],
+  "loop_policy": {
+    "default_rounds_before_reassessment": 3,
+    "score_dimensions": [
+      "scientific_validity",
+      "simpler_baseline_advantage",
+      "performance_cost",
+      "resilience_scalability",
+      "code_experiment_quality"
+    ],
+    "score_range_each": "0-5",
+    "stall_approaching": "total score improves by <2 points across 2 rounds OR same material blocker appears twice",
+    "stalled": "one deliberate architectural rethink fails to improve the result",
+    "falsified": "simpler system matches/beats claimed advantage or mechanism fails ablation",
+    "required_round_record": "docs/results/<task-id>/round-N.json when practical"
+  }
 }
