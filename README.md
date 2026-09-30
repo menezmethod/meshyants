@@ -26,6 +26,8 @@ Two cross-cutting constraints: **homeostasis** (prevent runaway activation/cost)
 
 ## Current status
 
+**Research project. No baseline comparison results are published yet.** The hypothesis above is untested; `docs/revival/` holds the plan and experiment designs.
+
 This is a research project, not a claim that brains and AI agents are equivalent. v2 should first test coordination mechanisms against strong simpler baselines.
 
 Start with:
@@ -38,3 +40,13 @@ Start with:
 
 Agents should start at `docs/tasks/README.md` and use `docs/tasks/LOOP_PROMPT.md`. The task system requires baseline comparisons, skeptical evaluators, performance evidence, and permits negative results/rejected approaches.
 
+## Build and test
+
+```bash
+go build ./...
+make test   # short tests with the race detector; `make test-integration` needs NATS
+```
+
+## License
+
+MIT, see [LICENSE](LICENSE).
